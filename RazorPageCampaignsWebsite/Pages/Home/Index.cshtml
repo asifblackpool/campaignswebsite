@@ -1,0 +1,22 @@
+@page
+@using Blackpool.Zengenti.CMS.Helpers.Components
+@using RazorPageCampaignsWebsite.Helpers
+@using Blackpool.Zengenti.CMS.Models.Weddings
+@model RazorPageCampaignsWebsite.Pages.IndexModel
+
+@{
+    GettingMarriedHome? entryModel = null;
+
+
+}
+
+@if (entryModel != null)
+{
+    <strong>Home page content to go here </strong>
+     
+}
+else
+{
+    <strong>Homepage not being loaded (entry not found) ..</strong>
+}
+

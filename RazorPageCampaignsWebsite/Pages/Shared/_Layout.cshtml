@@ -1,0 +1,61 @@
+﻿@using Blackpool.Zengenti.CMS.Models.Weddings.Base;
+@using RazorPageCampaignsWebsite.Core.Models;
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Wedding</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href=https://use.typekit.net/yqk1tir.css>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap">
+    <link rel="stylesheet" href="~/static/css/bootstrap/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/site.css" asp-append-version="true" />
+
+    <link rel="icon" type="image/x-icon" href="~/static/images/favicon.png">
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-D744');
+    </script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-D744" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header>
+        navigation to go here 
+    </header>
+    <main>
+   
+        @RenderBody()
+    </main>
+
+    <footer>
+        footer to go here 
+    </footer>
+    <script type="text/javascript" src="~/static/js/bootstrap/bootstrap.min.js"></script>
+    <script type="module" crossorigin="anonymous"
+        src="https://cms-blackpool.cloud.contensis.com/app/ui/forms/forms.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+          
+        });
+
+
+    </script>
+</body>
+
+</html>

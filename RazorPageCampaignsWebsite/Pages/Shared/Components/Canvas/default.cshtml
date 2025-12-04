@@ -1,0 +1,37 @@
+﻿
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using RazorPageCampaignsWebsite.Core.Services.ContentHandling
+
+@model SerialisedContent
+@inject ContentHandlerFactory HandlerFactory
+@{
+    bool showHandler = false;
+}
+@if (Model?.Items?.Count > 0)
+{
+    <div class="content-container">
+    @foreach (var item in Model.Items)
+    {
+        try 
+        {
+                @if (showHandler)
+                {
+                    <br />
+                    @Html.Raw(item.ClassName)
+                    <br/>
+                }
+            var handler = HandlerFactory.GetHandler(item.ClassName);
+            @await handler.HandleAsync(item)
+        }
+        catch (Exception ex)
+        {
+            <div class="error-alert">
+                @ex.Message
+                @if (ex.InnerException != null) {
+                    <br/><small>@ex.InnerException.Message</small>
+                }
+            </div>
+        }
+    }
+    </div>
+}

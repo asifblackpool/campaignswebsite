@@ -1,0 +1,33 @@
+﻿@using RazorPageCampaignsWebsite.Core.Models
+@using RazorPageCampaignsWebsite.Helpers;
+
+@model List<BreadcrumbItem>
+
+@{
+    int counter = 0;
+}
+@if (Model != null && Model.Any())
+{
+ <div class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @foreach (var item in Model)
+            {
+                <li class="breadcrumb-item @(item.IsActive ? "active" : "")">
+                    @if (!item.IsActive)
+                    {
+                            <a href="@string.Format("{0}", (counter == 0) ? NavigationLinkHelper.GetHomeLink() : item.Url)">@item.Title.CapitalizeFirstLetter()</a>
+                    }
+                    else
+                    {
+                        @item.Title.CapitalizeFirstLetter();
+                    }
+                
+                </li>
+                counter++;
+            }
+        </ol>
+    </nav>
+  </div>
+}
+
