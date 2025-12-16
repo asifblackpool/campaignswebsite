@@ -1,5 +1,5 @@
 ﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
-using Blackpool.Zengenti.CMS.Models.Weddings;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace RazorPageCampaignsWebsite.Components

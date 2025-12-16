@@ -1,6 +1,5 @@
 ﻿using RazorPageCampaignsWebsite.Constants;
-using RazorPageCampaignsWebsite.Models;
-using Blackpool.Zengenti.CMS.Models.Weddings;
+
 using RazorPageCampaignsWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
 

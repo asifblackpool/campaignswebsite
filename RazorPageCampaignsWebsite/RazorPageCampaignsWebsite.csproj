@@ -60,8 +60,8 @@
   <PropertyGroup>
     <!-- Adjust these paths to match your exact structure -->
     <SourceDllPath>C:\Development\Projects\repositories\shared\lgwebsite.data\content.modelling\bin\$(Configuration)\net8.0\Content.Modelling.dll</SourceDllPath>
-    <Destination1>C:\Development\Projects\repositories\weddingwebsite\shared</Destination1>
-    <Destination2>C:\Development\Projects\repositories\weddingwebsite\RazorPageWeddingWebsite\libs</Destination2>
+    <Destination1>C:\Development\Projects\repositories\campaignswebsite\shared</Destination1>
+    <Destination2>C:\Development\Projects\repositories\campaignswebsite\RazorPageCampaignsWebsite\libs</Destination2>
   </PropertyGroup>
 
   <!-- Create directories if they don't exist -->
