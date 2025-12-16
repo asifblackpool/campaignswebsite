@@ -64,6 +64,7 @@ builder.Services
 
         // Override root to always render blog post at '/'
         options.Conventions.AddPageRoute("/Home/Index", WebsiteConstants.SITE_VIEW_PATH);
+        options.Conventions.AddPageRoute("/Home/Details", WebsiteConstants.SITE_VIEW_PATH + "{*slug}");
 
 
         options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());

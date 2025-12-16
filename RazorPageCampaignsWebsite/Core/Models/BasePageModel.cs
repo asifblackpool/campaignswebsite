@@ -1,9 +1,9 @@
 ﻿using Blackpool.Zengenti.CMS.Models.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Weddings;
+using Blackpool.Zengenti.CMS.Models.Templates;
+using Content.Modelling.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 using RazorPageCampaignsWebsite.Helpers;
-using RazorPageCampaignsWebsite.Services;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Services.Interfaces;
 
@@ -71,7 +71,7 @@ namespace RazorPageCampaignsWebsite.Core.Models
         }
 
         // Example of using content repository inside your page model
-        protected List<TChild> GetChildEntries<TChild>(string parentUri) where TChild : class, IGettingMarried
+        protected List<TChild> GetChildEntries<TChild>(string parentUri) where TChild : class, IPageTemplates
         {
             return _contentRepository.GetChildEntries<TChild>(parentUri);
         }
@@ -112,14 +112,7 @@ namespace RazorPageCampaignsWebsite.Core.Models
 
 
         {
-            var temp = (items != null && items.Count > 0) ? items.Take(1).FirstOrDefault() : null;
-            if (temp != null)
-            {
-                if (temp is GettingMarried married && married.MultipleImage != null)
-                {
-                    ViewData["ImageStrip"] = married.MultipleImage;
-                }
-            }
+           
         }
 
         private void Reset()

@@ -1,0 +1,42 @@
+﻿
+@page
+@using Blackpool.Zengenti.CMS.Helpers
+@using Blackpool.Zengenti.CMS.Models.Canvas.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Canvas.Code
+@using Blackpool.Zengenti.CMS.Models.Canvas.Headers
+@using Blackpool.Zengenti.CMS.Models.Canvas.Lists
+@using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs
+@using Blackpool.Zengenti.CMS.Models.Canvas.Images
+@using Newtonsoft.Json;
+@using RazorPageCampaignsWebsite.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Templates
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Text
+
+
+@model RazorPageCampaignsWebsite.Pages.Home.DetailsModel
+@{
+    BGStandard? entryModel = (Model != null && Model.Items.Count == 1) ? Model.Items.FirstOrDefault() : null;
+}
+
+@if (entryModel != null)
+{
+    @try
+    {
+
+        @await Component.InvokeAsync("Canvas", entryModel.GetSerialisedCanvas())
+    }
+    catch (Exception ex)
+    {
+        <div class="alert alert-danger">@ex.Message</div>
+    }
+}
+else
+{
+    <h1>Root details pages not found </h1>
+}
+<style type="text/css">
+    main {
+        max-width: 1068px !important;
+    }
+</style>

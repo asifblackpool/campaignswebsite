@@ -10,6 +10,7 @@ namespace RazorPageCampaignsWebsite.Infrastructure.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using Blackpool.Zengenti.CMS.Models.Interfaces;
+    using Blackpool.Zengenti.CMS.Models.Templates;
 
     public class ContensisContentRepository : IContentRepository
     {
@@ -20,7 +21,7 @@ namespace RazorPageCampaignsWebsite.Infrastructure.Repositories
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public List<T> GetChildEntries<T>(string parentUri) where T : class, IGettingMarried
+        public List<T> GetChildEntries<T>(string parentUri) where T : class, IPageTemplates
         {
             var results = new List<T>();
 

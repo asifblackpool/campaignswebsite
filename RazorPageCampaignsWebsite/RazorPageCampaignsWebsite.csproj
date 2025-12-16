@@ -11,15 +11,19 @@
     <Compile Remove="bin\Legacy\**" />
     <Compile Remove="Core\Models\Content\Components\**" />
     <Compile Remove="Models\**" />
+    <Compile Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <Content Remove="bin\Legacy\**" />
     <Content Remove="Core\Models\Content\Components\**" />
     <Content Remove="Models\**" />
+    <Content Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <EmbeddedResource Remove="bin\Legacy\**" />
     <EmbeddedResource Remove="Core\Models\Content\Components\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <None Remove="bin\Legacy\**" />
     <None Remove="Core\Models\Content\Components\**" />
     <None Remove="Models\**" />
+    <None Remove="wwwroot\siteelements\channelshift\razorviews\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +41,11 @@
     <Folder Include="Core\Models\Content\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\siteelements\channelshift\scripts\webresource\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" />
   </ItemGroup>
 
   <ItemGroup>

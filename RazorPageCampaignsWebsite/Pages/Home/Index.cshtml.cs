@@ -2,16 +2,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPageCampaignsWebsite.Services.Interfaces;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Core.Models;
-using Blackpool.Zengenti.CMS.Models.Weddings;
 using RazorPageCampaignsWebsite.Core.Interfaces;
+using Blackpool.Zengenti.CMS.Models.Templates;
 
 namespace RazorPageCampaignsWebsite.Pages;
 
-public class IndexModel : BasePageModel<GettingMarriedHome>
+public class IndexModel : BasePageModel<BGStandard>
 {
 
-    public IndexModel(ILogger<BasePageModel<GettingMarriedHome>> logger,
-                      IDataService<GettingMarriedHome> dataService,
+    public IndexModel(ILogger<BasePageModel<BGStandard>> logger,
+                      IDataService<BGStandard> dataService,
                       IContentRepository contentRepository, BreadcrumbService breadcrumb) : base(logger, dataService, contentRepository, breadcrumb) { }
 
 
@@ -23,7 +23,7 @@ public class IndexModel : BasePageModel<GettingMarriedHome>
         await base.OnGetAsync();
         Items = Items.Take(1).ToList();
     
-      LogAction("Getting Married Home data loaded");
+      LogAction("Getting Campaigns data loaded");
     }
 
 

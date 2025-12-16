@@ -1,5 +1,6 @@
 ﻿using Blackpool.Zengenti.CMS.Models.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Weddings;
+using Blackpool.Zengenti.CMS.Models.Templates;
+using Content.Modelling.Models.Interfaces;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 
 namespace RazorPageCampaignsWebsite.Core.Services
@@ -16,10 +17,10 @@ namespace RazorPageCampaignsWebsite.Core.Services
             _repository = repository;
         }
 
-        public List<IGettingMarried> GetChildPages(string parentUri)
+        public List<IPageTemplates> GetChildPages(string parentUri)
         {
-            return _repository.GetChildEntries<GettingMarried>(parentUri)
-                       .Cast<IGettingMarried>()
+            return _repository.GetChildEntries<BGStandard>(parentUri)
+                       .Cast<IPageTemplates>()
                        .ToList();
         }
     }

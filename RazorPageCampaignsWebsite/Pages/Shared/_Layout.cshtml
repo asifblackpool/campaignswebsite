@@ -1,4 +1,4 @@
-﻿@using Blackpool.Zengenti.CMS.Models.Weddings.Base;
+﻿
 @using RazorPageCampaignsWebsite.Core.Models;
 
 
@@ -8,54 +8,104 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your Wedding</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href=https://use.typekit.net/yqk1tir.css>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap">
-    <link rel="stylesheet" href="~/static/css/bootstrap/bootstrap.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/css/site.css" asp-append-version="true" />
 
-    <link rel="icon" type="image/x-icon" href="~/static/images/favicon.png">
+    <link  rel="stylesheet"href ="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/base.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bundles/year-2023/newsarticles.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/home/IE/ie10.css"  asp-append-version="true"  />
 
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-D744');
+    <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
+
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/jquery.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/defiant.min.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/jquery.sidr.min.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/underscore.min.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/handlebars/handlebar-helpers.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/thirdparty/fluidvids/fluidvids.min.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/cookieservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/twitter/twitter.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/utilitiesservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/dateservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/footerservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/homeservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/tableservices.js"></script>
+
+    <script type="text/javascript">
+        //<![CDATA[
+
+        if (typeof(window.$j) == 'undefined') { window.$j = $; }
+        window.$j.register = function(name) {if (!this._components){this._components = {};} this._components[name] = true;};
+        window.$j.isRegistered = function(name) { if (!this._components) { return false; } return !!(this._components[name]); };
+        window.$j.requires = function(name) { if (!this.isRegistered(name)) { alert('JQuery Extension " ' + name + '" not registered'); }};
+        if (typeof(jQuery.fn.setArray) == 'undefined') { jQuery.fn.setArray = function( elems ) { this.length = 0; jQuery.fn.push.apply(this, elems); return this; }};
+        //]]>
     </script>
-    <!-- End Google Tag Manager -->
+
+    <script type='text/javascript'>
+        $(document).ready(function () {
+        window.commonservices.init('https://cms-blackpool.cloud.contensis.com','https://api.blackpool.gov.uk/preview/');
+        });
+    </script>
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-D744" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <header>
-        navigation to go here 
-    </header>
-    <main>
-   
-        @RenderBody()
-    </main>
 
-    <footer>
-        footer to go here 
-    </footer>
-    <script type="text/javascript" src="~/static/js/bootstrap/bootstrap.min.js"></script>
-    <script type="module" crossorigin="anonymous"
-        src="https://cms-blackpool.cloud.contensis.com/app/ui/forms/forms.js"></script>
+    <!-- start of container -->
+    <div id="container">
+        <partial name="Global/_header" />
+
+        <div id="root-container" class="homepage-max-width clearfix" style="margin-top: 0px; background-color: white; max-width:1170px;">
+            <div class="row zero-pad-left zero-pad-right clearfix">
+                    <div class="col-md-12 col-sm-12 zero-pad-all">
+                        <div id="topbar" class="clearfix">
+                            <div id="icon-landing-page-image-container" class="clearfix grid-block grid-block-default-height">
+                                &nbsp;
+                            </div>
+                            <div class="clearfix grid-block-5">
+                                <partial name="Global/_breadcrumb" />
+                                <partial name="Global/_landingtitle" />
+                                <partial name="Global/_linkstopdf" />
+                            </div>
+                        </div>
+                        <div class="row zero-pad-left zero-pad-right">
+                            <div id="mainbar" class="col-xs-12 col-sm-12 col-md-12 col-md-10 col-md-push-2 clearfix zero-pad-all">
+                                    @RenderBody()
+                            </div>
+                            <div id="sidebar" class="col-xs-12 col-sm-12 col-md-12 col-md-2 col-md-pull-10 clearfix zero-pad-all">
+
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <partial name="Global/_backtotop" />
+        </div>
+
+        <partial name="Global/_footer" />
+
+         <div id="sidr-menu" class="sidr" style="display: none;"></div>
+    </div>
+    <!-- end of container -->
+
+   	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/utilitiesservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/common/common.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/homeservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/browserservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/scrollerservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/accordionservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/tableservices.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/run/runarticles.js"></script>
+	<script  type="text/javascript" src="~/SiteElements/ChannelShift/scripts/contensis/gallery.js"></script>
+
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-          
+        $(document).ready(function() { 
+
+            var pdfLinkChange = function() {
+                url = window.location.href + '?download=DownloadasPDFlink_pdf'
+                $('.icon-pdf').attr('href', url);
+            };
+            setTimeout(pdfLinkChange(), 800);
         });
-
-
     </script>
 </body>
-
 </html>
