@@ -46,6 +46,8 @@ builder.Services.AddScoped<IImageHelper, ImageHelperWrapper>();
 builder.Services.AddScoped<ITableHelper, TableHelperWrapper>();
 builder.Services.AddScoped<IAccordionRenderer, AccordionRenderer>();
 builder.Services.AddScoped<IBgCtaLinkRenderer, BgCtaLinkRenderer>();
+builder.Services.AddScoped<IGovUkAccordionWithCtaButtonRenderer, GovUkAccordionWithCtaButtonRenderer>();
+
 
 //Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
@@ -73,6 +75,7 @@ builder.Services
 builder.Services.AddScoped<BreadcrumbService>();
 builder.Services.AddHttpContextAccessor();
 
+//automatic register all content handlers 
 builder.Services.AddContentHandlers();
 
 var app = builder.Build();

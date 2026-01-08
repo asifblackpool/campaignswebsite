@@ -1,0 +1,64 @@
+﻿using Blackpool.Zengenti.CMS.Models.Canvas.Quote;
+using Blackpool.Zengenti.CMS.Models.Components;
+using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Microsoft.AspNetCore.Html;
+using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
+using RazorPageCampaignsWebsite.Helpers.Html;
+using RazorPageCampaignsWebsite.Helpers.Wrappers;
+
+namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
+{
+    public class VideoHandler : IContentHandler
+    {
+        private readonly ISerializationHelper _serializer;
+
+        public VideoHandler(ISerializationHelper serializer)
+        {
+            _serializer = serializer;
+        }
+
+        public bool CanHandle(string className) => className == typeof(Video).Name;
+
+        public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
+        {
+            var htmlContent = new HtmlContentBuilder();
+
+            try
+            {
+                // Deserialize the quote content
+                var video = await _serializer.DeserializeAsync<Video>(item);
+
+                if (video != null && !string.IsNullOrEmpty(video.Url))
+                {
+                    // Usage - Super clean!:
+
+                    htmlContent.AppendHtml(string.Format("<h2>{0}</h2>", video.Title));
+
+                    if (video.Text != null) 
+                    { 
+                        htmlContent.AppendHtml("<div class='row equal zero-margin-all'>");
+                        htmlContent.AppendHtml(string.Format("<div class='col-md-12 col-sm-12 col-xs-12 zero-pad-all clearfix'>{0}</div>", video.Text));
+                        htmlContent.AppendHtml("</div>");
+                    }
+
+                    if (video.Url != null) 
+                    {
+                         htmlContent.AppendVideoEmbed(video.Url);
+                        // OR directly with URL:
+                        // htmlContent.AppendVideoEmbed(video.Url, "my-class", "height:400px; width:100%;")
+                    }
+                }
+                else
+                {
+                    htmlContent.AppendHtml("<!-- Error: Video content is null -->");
+                }
+            }
+            catch (Exception ex)
+            {
+                htmlContent.AppendHtml($"<!-- Error processing Video Handler: {ex.Message} -->");
+            }
+
+            return htmlContent;
+        }
+    }
+}

@@ -17,6 +17,16 @@ namespace RazorPageCampaignsWebsite.Helpers.Serialisation
         public async Task<T?> DeserializeAsync<T>(SerialisedItem item)
         {
             // Using Task.Run to ensure proper async behavior
+            string temp = item.Content;
+            try
+            {
+                var t = JsonConvert.DeserializeObject<T>(item.Content);
+            }
+            catch(Exception ex)
+            {
+
+            }
+    
             return await Task.Run(() => JsonConvert.DeserializeObject<T>(item.Content));
         }
     }

@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CampaignsWebsite.UnitTests", "CampaignsWebsite.UnitTests\CampaignsWebsite.UnitTests.csproj", "{E588494B-23E4-4062-81D9-890E88627E30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,18 @@ Global
 		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x64.Build.0 = Release|Any CPU
 		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x86.ActiveCfg = Release|Any CPU
 		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x86.Build.0 = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|x64.Build.0 = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Debug|x86.Build.0 = Debug|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|x64.ActiveCfg = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|x64.Build.0 = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|x86.ActiveCfg = Release|Any CPU
+		{E588494B-23E4-4062-81D9-890E88627E30}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

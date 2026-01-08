@@ -1,0 +1,31 @@
+﻿using Blackpool.Zengenti.CMS.Models.Components;
+using Microsoft.AspNetCore.Html;
+
+namespace RazorPageCampaignsWebsite.Helpers.Interfaces
+{
+    public interface IGovUkAccordionWithCtaButtonRenderer
+    {
+        /// <summary>
+        /// Renders a GOV.UK styled accordion with optional CTA buttons
+        /// </summary>
+        IHtmlContent RenderGovUkAccordion(
+            string accordionTitle,
+            List<AccordionWithCTAContent> items,
+            GovUkAccordionOptions? options = null);
+    }
+
+
+    #region helper class
+
+    public class GovUkAccordionOptions
+    {
+        public string AccordionId { get; set; } = string.Empty;
+        public bool RememberExpandedState { get; set; } = false;
+        public string ContainerClass { get; set; } = "govuk-accordion";
+        public string ModuleName { get; set; } = "govuk-accordion";
+        public string? AdditionalContainerClasses { get; set; }
+        public Dictionary<string, string> ContainerAttributes { get; set; } = new();
+    }
+
+    #endregion
+}
