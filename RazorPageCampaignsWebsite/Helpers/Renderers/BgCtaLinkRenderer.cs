@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
+using System.Text;
 
 namespace RazorPageCampaignsWebsite.Helpers.Renderers
 {
@@ -20,9 +21,18 @@ namespace RazorPageCampaignsWebsite.Helpers.Renderers
             if (cta == null)
                 return HtmlString.Empty;
 
-            // Call the extension method using the injected IHtmlHelper
-            await Task.Delay(100); // Example delay
-            return _htmlHelper.RenderBgCtaButton(cta, buttonClass);
+            await Task.Delay(100); // Replace with actual async work if needed
+
+            // Assuming RenderBgCtaButton returns TagBuilder
+            var buttonTag = _htmlHelper.RenderBgCtaButton(cta, buttonClass);
+
+            // TagBuilder implements IHtmlContent, so we can use it directly
+            var container = new HtmlContentBuilder();
+            container.AppendHtml("<div class=\"button-container\">");
+            container.AppendHtml(buttonTag); // TagBuilder can be appended directly
+            container.AppendHtml("</div>");
+
+            return container;
         }
     }
 }

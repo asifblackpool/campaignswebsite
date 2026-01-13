@@ -3,6 +3,7 @@ using Blackpool.Zengenti.CMS.Models.Components;
 using Blackpool.Zengenti.CMS.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
+using RazorPageCampaignsWebsite.Helpers;
 using RazorPageCampaignsWebsite.Helpers.Html;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
 
@@ -43,9 +44,9 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 
                     if (video.Url != null) 
                     {
-                         htmlContent.AppendVideoEmbed(video.Url);
-                        // OR directly with URL:
-                        // htmlContent.AppendVideoEmbed(video.Url, "my-class", "height:400px; width:100%;")
+                        //htmlContent.AppendVideoEmbed(video.Url);
+
+                        htmlContent.AppendHtml($"<div class=\"video-container\">{UrlTypeHelper.GetEmbedCode(video.Url)}</div>");
                     }
                 }
                 else

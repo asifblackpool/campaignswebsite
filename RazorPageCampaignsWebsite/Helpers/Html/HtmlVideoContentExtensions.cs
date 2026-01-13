@@ -6,7 +6,7 @@ namespace RazorPageCampaignsWebsite.Helpers.Html
     public static class HtmlVideoContentExtensions
     {
         public static void AppendVideoEmbed(this IHtmlContentBuilder htmlContent, string videoUrl,
-            string containerClass = "", string wrapperStyle = null)
+            string containerClass = "", string? wrapperStyle = null)
         {
             if (string.IsNullOrEmpty(videoUrl))
                 return;
@@ -18,7 +18,16 @@ namespace RazorPageCampaignsWebsite.Helpers.Html
                 <div class=""col-md-12 col-sm-12 col-xs-12 zero-pad-all clearfix"" style=""margin-bottom:20px; margin-top:30px; margin-left:0px; margin-right:0px;"">
                     <div id=""video"" class=""editor {containerClass}"">
                         <div class=""iframe-wrapper"" style=""{wrapperStyle ?? defaultWrapperStyle}"">
-                            <iframe id=""iframe"" src=""{videoUrl}"" frameborder=""0"" height=""100%"" width=""100%"" allowfullscreen></iframe>
+                            <iframe 
+                                src=""{videoUrl}"" 
+                                frameborder=""0"" 
+                                width=""100%"" 
+                                height=""100%"" 
+                                allow=""accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"" 
+                                allowfullscreen
+                                sandbox=""allow-same-origin allow-scripts allow-popups allow-presentation""
+                                title=""YouTube video player"">
+                            </iframe>
                         </div>
                     </div>
                 </div>

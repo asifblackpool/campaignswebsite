@@ -32,7 +32,7 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                 if (result == null)
                     return HtmlString.Empty;
 
-                return await _ctaRenderer.RenderBgCtaButtonAsync(result, "pink-button");
+                return await _ctaRenderer.RenderBgCtaButtonAsync(result, "standard-link-button");
             }
             catch (Exception ex)
             {
