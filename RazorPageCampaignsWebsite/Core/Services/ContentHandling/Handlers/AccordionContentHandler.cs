@@ -42,28 +42,46 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                 var jsonObject = JObject.Parse(content);
                 var accordionArray = jsonObject[ComponentKeys.ACCORDION_CONTENT];
 
-                // Get all items:
-                var allItems = accordionArray?.ToObject<AccordionContent>();
+                AccordionContent? accordion = null;
+
+                // Get all item
+                if (accordionArray != null)
+                {
+                    accordion = accordionArray?.ToObject<AccordionContent>();
+                }
+                else
+                {
+                    if (item.Key == ComponentKeys.ACCORDION_CONTENT)
+                    {
+                        accordion = jsonObject?.ToObject<AccordionContent>();
+                    }
+                    else
+                    {
+                        accordion = new AccordionContent();
+                    }
+                    
+                }
+           
 
 
-                if (allItems?.Body == string.Empty)
+                if (accordion?.Body == string.Empty)
                     return HtmlString.Empty;
 
-                string accordionTitle = allItems?.Title ?? "Accordion";
+                string accordionTitle = accordion?.Title ?? "Accordion";
 
-                bool rememberExpanded = allItems.IsExpanded;
+                bool? rememberExpanded = accordion?.IsExpanded;
 
                 var options = new GovUkAccordionOptions
                 {
                     AccordionId = $"accordion-{Guid.NewGuid():N}",
-                    RememberExpandedState = rememberExpanded
+                    RememberExpandedState = (rememberExpanded == null) ? false : (bool)rememberExpanded
                 };
 
-                if (allItems == null)
+                if (accordion== null)
                     return HtmlString.Empty;
 
                 List<AccordionContent> accordionContentList = new List<AccordionContent>();
-                accordionContentList.Add(allItems);
+                accordionContentList.Add(accordion);
                 var temp = _accordionRenderer.RenderGovUkAccordion(accordionTitle, accordionContentList, options);
 
                 return temp;

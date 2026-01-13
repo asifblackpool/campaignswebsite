@@ -10,9 +10,9 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
     public class AccordionHandler : IContentHandler
     {
         private readonly ISerializationHelper _serializer;
-        private readonly IAccordionRenderer _accordionRenderer;
+        private readonly IGovUkAccordionRenderer _accordionRenderer;
 
-        public AccordionHandler(ISerializationHelper serializer, IAccordionRenderer accordionRenderer)
+        public AccordionHandler(ISerializationHelper serializer, IGovUkAccordionRenderer accordionRenderer)
         {
             _serializer = serializer;
             _accordionRenderer = accordionRenderer;
@@ -36,7 +36,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                     var accordionName = accordion.AccordionName ?? string.Empty;
 
                     // Render the accordion
-                    var renderedAccordion = _accordionRenderer.Render(accordionName, accordionList);
+
+                    var renderedAccordion = _accordionRenderer.RenderGovUkAccordion(accordionName, accordionList);
                     htmlContent.AppendHtml(renderedAccordion);
                 }
             }

@@ -13,13 +13,13 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
     public class AccordionHandlerTests : HandlerTestBase
     {
         private readonly Mock<ISerializationHelper> _serializerMock;
-        private readonly Mock<IAccordionRenderer> _rendererMock;
+        private readonly Mock<IGovUkAccordionRenderer> _rendererMock;
         private readonly AccordionHandler _handler;
 
         public AccordionHandlerTests()
         {
             _serializerMock = CreateSerializerMock();
-            _rendererMock = new Mock<IAccordionRenderer>();
+            _rendererMock = new Mock<IGovUkAccordionRenderer>();
             _handler = new AccordionHandler(_serializerMock.Object, _rendererMock.Object);
         }
 
@@ -40,7 +40,7 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
             _serializerMock.Setup(x => x.DeserializeAsync<Accordion>(item))
                          .ReturnsAsync(accordion);
 
-            _rendererMock.Setup(x => x.Render("faq", It.IsAny<List<AccordionContent>>()))
+            _rendererMock.Setup(x => x.RenderGovUkAccordion("faq", It.IsAny<List<AccordionContent>>(),null))
                        .Returns(new HtmlString("<div class='accordion'></div>"));
 
             // Act
