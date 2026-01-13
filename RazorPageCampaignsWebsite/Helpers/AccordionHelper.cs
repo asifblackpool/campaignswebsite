@@ -64,8 +64,7 @@ public static class AccordionHelper
             var arrowSpan = new TagBuilder("span");
             arrowSpan.AddCssClass("arrow");
 
-            arrowSpan.InnerHtml.Append("+ ");
-            arrowSpan.InnerHtml.AppendHtml(strongTag);   // ✅ use Append, not direct assignmen
+            arrowSpan.InnerHtml.Append("+ ");            arrowSpan.InnerHtml.AppendHtml(strongTag);   // ✅ use Append, not direct assignmen
             header.InnerHtml.AppendHtml(arrowSpan);
 
             // Create content div

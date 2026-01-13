@@ -1,23 +1,23 @@
-﻿using Blackpool.Zengenti.CMS.Models.Components;
+﻿// Core/Services/ContentHandling/Handlers/AccordionWithCtaHandler.cs (Simplified)
+using Blackpool.Zengenti.CMS.Constants;
+using Blackpool.Zengenti.CMS.Models.Components;
 using Blackpool.Zengenti.CMS.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
-using RazorPageCampaignsWebsite.Helpers;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
+using RazorPageCampaignsWebsite.Helpers.Wrappers;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
     public class AccordionContentHandler : IContentHandler
     {
-        private readonly IHtmlHelper _htmlHelper;
-        private readonly ITableHelper _tableHelper;
+        private readonly IGovUkAccordionRenderer _accordionRenderer;
 
-        public AccordionContentHandler(IHtmlHelper htmlHelper, ITableHelper tableHelper)
+        public AccordionContentHandler(IGovUkAccordionRenderer accordionRenderer)
         {
-            _htmlHelper = htmlHelper;
-            _tableHelper = tableHelper;
+            _accordionRenderer = accordionRenderer;
         }
 
         public bool CanHandle(string className)
@@ -27,33 +27,50 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
         {
-            var htmlContent = new HtmlContentBuilder();
-
-            if (!CanHandle(item?.ClassName) || string.IsNullOrEmpty(item.Content))
-            {
-                return htmlContent;
-            }
+            if (string.IsNullOrEmpty(item.Content))
+                return HtmlString.Empty;
 
             try
             {
-                await Task.Delay(100); // Example delay
-                var accordionContent = JsonConvert.DeserializeObject<AccordionContent>(item.Content);
-                if (accordionContent == null)
+                List<IGovUkAccordionRenderer> accordionItems;
+                // Do this:
+
+
+                // Get all items:
+
+                var content = item.Content.Trim();
+                var jsonObject = JObject.Parse(content);
+                var accordionArray = jsonObject[ComponentKeys.ACCORDION_CONTENT];
+
+                // Get all items:
+                var allItems = accordionArray?.ToObject<AccordionContent>();
+
+
+                if (allItems?.Body == string.Empty)
+                    return HtmlString.Empty;
+
+                string accordionTitle = allItems?.Title ?? "Accordion";
+
+                bool rememberExpanded = allItems.IsExpanded;
+
+                var options = new GovUkAccordionOptions
                 {
-                    return htmlContent;
-                }
+                    AccordionId = $"accordion-{Guid.NewGuid():N}",
+                    RememberExpandedState = rememberExpanded
+                };
 
-                // Render accordion
-                var accordionList = new List<AccordionContent> { accordionContent };
-                var accordionHtml = _htmlHelper.RenderAccordion(string.Empty, accordionList);
-                htmlContent.AppendHtml(accordionHtml);
+                if (allItems == null)
+                    return HtmlString.Empty;
 
-                return htmlContent;
+                List<AccordionContent> accordionContentList = new List<AccordionContent>();
+                accordionContentList.Add(allItems);
+                var temp = _accordionRenderer.RenderGovUkAccordion(accordionTitle, accordionContentList, options);
+
+                return temp;
             }
-            catch (Exception ex)
+            catch
             {
-                htmlContent.AppendHtml($"<!-- Error processing Accordion Content Handler: {ex.Message} -->");
-                return htmlContent;
+                return new HtmlString("<!-- Error rendering accordion content -->");
             }
         }
     }

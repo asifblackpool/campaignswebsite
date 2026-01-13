@@ -25,7 +25,7 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
         {
             _htmlHelperMock = new Mock<IHtmlHelper>();
             _tableHelperMock = new Mock<ITableHelper>();
-            _handler = new AccordionContentHandler(_htmlHelperMock.Object, _tableHelperMock.Object);
+            //handler = new AccordionContentHandler(_htmlHelperMock.Object, _tableHelperMock.Object);
 
             // Setup required ViewContext for TagBuilder
             _htmlHelperMock.Setup(h => h.ViewContext)

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
+using RazorPageCampaignsWebsite.Helpers.Wrappers;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
@@ -62,7 +63,9 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                 if (allItems == null) 
                     return HtmlString.Empty;
 
-                return _accordionRenderer.RenderGovUkAccordion(accordionTitle, allItems, options);
+                var temp = _accordionRenderer.RenderGovUkAccordion(accordionTitle, allItems, options);
+
+                return temp;
             }
             catch
             {

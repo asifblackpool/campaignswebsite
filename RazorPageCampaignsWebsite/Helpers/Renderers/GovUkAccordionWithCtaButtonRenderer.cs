@@ -1,4 +1,4 @@
-﻿// Helpers/Renderers/GovUkAccordionRendererWithCtaButton.cs
+﻿
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Blackpool.Zengenti.CMS.Models.Components;
@@ -13,20 +13,14 @@ namespace RazorPageCampaignsWebsite.Helpers.Renderers
         private readonly HtmlEncoder _htmlEncoder;
         private readonly ILogger<GovUkAccordionWithCtaButtonRenderer> _logger;
 
-        public GovUkAccordionWithCtaButtonRenderer(
-            IHtmlHelper htmlHelper,
-            HtmlEncoder htmlEncoder,
-            ILogger<GovUkAccordionWithCtaButtonRenderer> logger)
+        public GovUkAccordionWithCtaButtonRenderer(IHtmlHelper htmlHelper,HtmlEncoder htmlEncoder,ILogger<GovUkAccordionWithCtaButtonRenderer> logger)
         {
             _htmlHelper = htmlHelper;
             _htmlEncoder = htmlEncoder;
             _logger = logger;
         }
 
-        public IHtmlContent RenderGovUkAccordion(
-            string accordionTitle,
-            List<AccordionWithCTAContent> items,
-            GovUkAccordionOptions? options = null)
+        public IHtmlContent RenderGovUkAccordion(string accordionTitle,List<AccordionWithCTAContent> items,GovUkAccordionOptions? options = null)
         {
             if (items == null || !items.Any())
             {
@@ -36,156 +30,88 @@ namespace RazorPageCampaignsWebsite.Helpers.Renderers
 
             options ??= new GovUkAccordionOptions();
 
-            // Generate accordion ID if not provided
-            if (string.IsNullOrEmpty(options.AccordionId))
+            // Create the container with your exact string format
+            var containerDiv = new TagBuilder("div");
+            containerDiv.AddCssClass("govuk-accordion");
+            containerDiv.Attributes["data-module"] = "govuk-accordion";
+            containerDiv.Attributes["id"] = $"accordion-default-{SanitizeId(accordionTitle)}";
+
+            // Add remember expanded if needed
+            if (options.RememberExpandedState)
             {
-                options.AccordionId = $"accordion-{SanitizeId(accordionTitle)}-{Guid.NewGuid():N}";
+                containerDiv.Attributes["data-remember-expanded"] = "true";
             }
 
-            var accordionContainer = CreateAccordionContainer(options, accordionTitle);
+            // Add data-title attribute
+            containerDiv.Attributes["data-title"] = _htmlEncoder.Encode(accordionTitle);
 
+            // Render sections directly without extra method
             int counter = 1;
             foreach (var item in items)
             {
-                var sectionHtml = RenderAccordionSection(item, accordionTitle, counter);
-                accordionContainer.InnerHtml.AppendHtml(sectionHtml);
+                var section = CreateAccordionSection(item, accordionTitle, counter);
+                containerDiv.InnerHtml.AppendHtml(section);
                 counter++;
             }
 
-            return accordionContainer;
+            return containerDiv;
         }
 
-        private TagBuilder CreateAccordionContainer(GovUkAccordionOptions options, string accordionTitle)
-        {
-            var accordionContainer = new TagBuilder("div");
-            accordionContainer.AddCssClass(options.ContainerClass);
-
-            if (!string.IsNullOrEmpty(options.AdditionalContainerClasses))
-            {
-                accordionContainer.AddCssClass(options.AdditionalContainerClasses);
-            }
-
-            accordionContainer.Attributes["data-module"] = options.ModuleName;
-            accordionContainer.Attributes["id"] = options.AccordionId;
-
-            if (options.RememberExpandedState)
-            {
-                accordionContainer.Attributes["data-remember-expanded"] = "true";
-            }
-
-            // Add custom container attributes
-            foreach (var attr in options.ContainerAttributes)
-            {
-                if (!accordionContainer.Attributes.ContainsKey(attr.Key))
-                {
-                    accordionContainer.Attributes[attr.Key] = attr.Value;
-                }
-            }
-
-            // Add data attribute for title (optional, can be useful for JS)
-            accordionContainer.Attributes["data-title"] = accordionTitle;
-
-            return accordionContainer;
-        }
-
-        private IHtmlContent RenderAccordionSection(
-            AccordionWithCTAContent item,
-            string accordionTitle,
-            int counter)
+        private IHtmlContent CreateAccordionSection(AccordionWithCTAContent item,string accordionTitle,int counter)
         {
             var sectionDiv = new TagBuilder("div");
             sectionDiv.AddCssClass("govuk-accordion__section");
 
-            // First section expanded by default (GOV.UK pattern)
-            if (counter == 1)
-            {
-                sectionDiv.AddCssClass("govuk-accordion__section--expanded");
-            }
-
-            // Section Header
+            // Header
             var headerDiv = new TagBuilder("div");
             headerDiv.AddCssClass("govuk-accordion__section-header");
-            sectionDiv.InnerHtml.AppendHtml(headerDiv);
 
-            // Heading
             var heading = new TagBuilder("h2");
             heading.AddCssClass("govuk-accordion__section-heading");
-            headerDiv.InnerHtml.AppendHtml(heading);
 
-            // Button/Span
             var buttonSpan = new TagBuilder("span");
             buttonSpan.AddCssClass("govuk-accordion__section-button");
-            buttonSpan.Attributes["id"] = $"accordion-{SanitizeId(accordionTitle)}-heading-{counter}";
-            buttonSpan.InnerHtml.Append(item.Title ?? $"Section {counter}");
-            heading.InnerHtml.AppendHtml(buttonSpan);
+            buttonSpan.Attributes["id"] = $"accordion-default-heading-{SanitizeId(accordionTitle)}-{counter}";
+            buttonSpan.InnerHtml.Append(_htmlEncoder.Encode(item.Title ?? $"Section {counter}"));
 
-            // Content Div
+            heading.InnerHtml.AppendHtml(buttonSpan);
+            headerDiv.InnerHtml.AppendHtml(heading);
+            sectionDiv.InnerHtml.AppendHtml(headerDiv);
+
+            // Content
             var contentDiv = new TagBuilder("div");
             contentDiv.AddCssClass("govuk-accordion__section-content");
-            contentDiv.Attributes["id"] = $"accordion-{SanitizeId(accordionTitle)}-content-{counter}";
-            contentDiv.Attributes["aria-labelledby"] = $"accordion-{SanitizeId(accordionTitle)}-heading-{counter}";
+            contentDiv.Attributes["id"] = $"accordion-default-content-{counter}";
 
-            // Hide all sections except first (GOV.UK default)
-            if (counter != 1)
-            {
-                contentDiv.Attributes["hidden"] = "hidden";
-                contentDiv.Attributes["aria-hidden"] = "true";
-            }
-            else
-            {
-                contentDiv.Attributes["aria-hidden"] = "false";
-            }
-
-            sectionDiv.InnerHtml.AppendHtml(contentDiv);
-
-            // Body Content
             var bodyDiv = new TagBuilder("div");
             bodyDiv.AddCssClass("govuk-body");
-            contentDiv.InnerHtml.AppendHtml(bodyDiv);
 
-            // Main Content - safely handle HTML
+            // Body content
             if (!string.IsNullOrEmpty(item.BodyContent))
             {
-                // Use HtmlString to preserve HTML markup
                 bodyDiv.InnerHtml.AppendHtml(new HtmlString(item.BodyContent));
             }
 
-            // CTA Button if present
+            // CTA Button
             if (item.CtaAccordionButton != null)
             {
                 bodyDiv.InnerHtml.AppendHtml(new HtmlString("<br />"));
-                var buttonHtml = RenderCtaButton(item.CtaAccordionButton, accordionTitle, counter);
-                bodyDiv.InnerHtml.AppendHtml(buttonHtml);
+
+                var anchor = new TagBuilder("a");
+                anchor.AddCssClass("cta-link-button");
+                anchor.AddCssClass("accessibility-tab");
+
+                var encodedUrl = _htmlEncoder.Encode(item.CtaAccordionButton.Url);
+                anchor.Attributes["onclick"] = $"window.location.href='{encodedUrl.Replace("'", "\\'")}'";
+                anchor.InnerHtml.Append(_htmlEncoder.Encode(item.CtaAccordionButton.Text));
+
+                bodyDiv.InnerHtml.AppendHtml(anchor);
             }
 
+            contentDiv.InnerHtml.AppendHtml(bodyDiv);
+            sectionDiv.InnerHtml.AppendHtml(contentDiv);
+
             return sectionDiv;
-        }
-
-        private IHtmlContent RenderCtaButton(AccordionButton button, string accordionTitle, int counter)
-        {
-            var anchor = new TagBuilder("a");
-            anchor.AddCssClass("cta-link-button");
-            anchor.AddCssClass("accessibility-tab");
-
-            // Encode the URL for safety
-            var encodedUrl = _htmlEncoder.Encode(button.Url);
-            anchor.Attributes["href"] = encodedUrl;
-
-            // Add onclick handler as per your HTML example
-            anchor.Attributes["onclick"] = $"window.location.href='{encodedUrl}'";
-
-            // Accessibility attributes
-            anchor.Attributes["role"] = "button";
-            anchor.Attributes["tabindex"] = "0";
-            anchor.Attributes["aria-label"] = $"{_htmlEncoder.Encode(button.Text)} (click to navigate)";
-
-            // Add data attributes for tracking/identification
-            anchor.Attributes["data-accordion-title"] = _htmlEncoder.Encode(accordionTitle);
-            anchor.Attributes["data-section-index"] = counter.ToString();
-            anchor.Attributes["data-button-type"] = "accordion-cta";
-
-            anchor.InnerHtml.Append(_htmlEncoder.Encode(button.Text));
-            return anchor;
         }
 
         private string SanitizeId(string input)
@@ -201,5 +127,6 @@ namespace RazorPageCampaignsWebsite.Helpers.Renderers
                 "-"
             ).Trim('-');
         }
+
     }
 }

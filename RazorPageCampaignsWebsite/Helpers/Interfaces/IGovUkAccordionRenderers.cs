@@ -3,6 +3,19 @@ using Microsoft.AspNetCore.Html;
 
 namespace RazorPageCampaignsWebsite.Helpers.Interfaces
 {
+
+    public interface IGovUkAccordionRenderer
+    {
+        /// <summary>
+        /// Renders a GOV.UK styled accordion with optional CTA buttons
+        /// </summary>
+        IHtmlContent RenderGovUkAccordion(
+            string accordionTitle,
+            List<AccordionContent> items,
+            GovUkAccordionOptions? options = null);
+    }
+
+
     public interface IGovUkAccordionWithCtaButtonRenderer
     {
         /// <summary>
@@ -11,6 +24,18 @@ namespace RazorPageCampaignsWebsite.Helpers.Interfaces
         IHtmlContent RenderGovUkAccordion(
             string accordionTitle,
             List<AccordionWithCTAContent> items,
+            GovUkAccordionOptions? options = null);
+    }
+
+
+    public interface IGovUkAccordionWithImagesRenderer
+    {
+        /// <summary>
+        /// Renders a GOV.UK styled accordion with optional CTA buttons
+        /// </summary>
+        IHtmlContent RenderGovUkAccordion(
+            string accordionTitle,
+            List<AccordionContentWithImages> items,
             GovUkAccordionOptions? options = null);
     }
 

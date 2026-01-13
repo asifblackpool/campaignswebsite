@@ -8,20 +8,20 @@ using Newtonsoft.Json.Linq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Renderers;
+using RazorPageCampaignsWebsite.Helpers.Wrappers;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
     public class AccordionWithImagesHandler : IContentHandler
     {
-        private readonly IHtmlHelper _htmlHelper;
-        private readonly ITableHelper _tableHelper;
+        private readonly IGovUkAccordionWithImagesRenderer _accordionRenderer;
+       
 
-        public AccordionWithImagesHandler(IHtmlHelper htmlHelper, ITableHelper tableHelper)
+        public AccordionWithImagesHandler(IGovUkAccordionWithImagesRenderer accordionRenderer)
         {
-            _htmlHelper = htmlHelper;
-            _tableHelper = tableHelper;
+            _accordionRenderer = accordionRenderer;
         }
-
+        
         public bool CanHandle(string className)
         {
             return className == typeof(AccordionContentWithImages).Name;
@@ -38,30 +38,30 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 
             try
             {
-                await Task.Delay(100); // Example delay
+                if (!CanHandle(item?.ClassName) || string.IsNullOrEmpty(item.Content))
+                    return HtmlString.Empty;
 
+                // Parse and deserialize
                 var content = item.Content.Trim();
                 var jsonObject = JObject.Parse(content);
                 var accordionArray = jsonObject[ComponentKeys.ACCORDION_CONTENT_IMAGES];
 
-                var allItems = accordionArray?.ToObject<List<AccordionContentWithImages>>();
+                if (accordionArray == null)
+                    return HtmlString.Empty;
 
-                //var accordionContent = JsonConvert.DeserializeObject<AccordionContentWithImages>(allItems);
-                if (allItems == null)
-                {
-                    return htmlContent;
-                }
+                var allItems = accordionArray.ToObject<List<AccordionContentWithImages>>();
 
-        
-                var accordionHtml = _htmlHelper.RenderAccordion(string.Empty, allItems);
-                htmlContent.AppendHtml(accordionHtml);
+                if (allItems == null || !allItems.Any())
+                    return HtmlString.Empty;
 
-                return htmlContent;
+                // Render and return directly
+                return _accordionRenderer.RenderGovUkAccordion(string.Empty, allItems);
             }
             catch (Exception ex)
             {
-                htmlContent.AppendHtml($"<!-- Error processing Accordion With Images Handler: {ex.Message} -->");
-                return htmlContent;
+                // Log the error properly
+                Console.WriteLine($"AccordionWithImagesHandler error: {ex.Message}");
+                return HtmlString.Empty;
             }
         }
     }

@@ -47,6 +47,8 @@ builder.Services.AddScoped<ITableHelper, TableHelperWrapper>();
 builder.Services.AddScoped<IAccordionRenderer, AccordionRenderer>();
 builder.Services.AddScoped<IBgCtaLinkRenderer, BgCtaLinkRenderer>();
 builder.Services.AddScoped<IGovUkAccordionWithCtaButtonRenderer, GovUkAccordionWithCtaButtonRenderer>();
+builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWithImagesRenderer>();
+builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 
 
 //Processors
