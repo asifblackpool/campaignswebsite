@@ -28,7 +28,7 @@
                 return UrlType.GoogleMaps;
 
             if (url.Contains("youtube.com") || url.Contains("youtu.be"))
-                
+
                 return UrlType.YouTube;
 
             if (url.Contains("vimeo.com"))
@@ -120,7 +120,7 @@
             };
         }
 
-    
+
         private static string GetYouTubeEmbedCode(string url)
         {
             string videoId = null;
@@ -158,7 +158,7 @@
                 <div class=""video-embed"">
                     <iframe 
                         src=""https://www.youtube.com/embed/{videoId}?rel=0&modestbranding=1{startParam}""
-                        width=""100$"" 
+                        width=""100%$"" 
                         height=""100%"" 
                         frameborder=""0"" 
                         allow=""accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture""
