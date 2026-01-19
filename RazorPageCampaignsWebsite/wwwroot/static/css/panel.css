@@ -1,0 +1,94 @@
+﻿/* ==================================
+   Base shared styles
+   ================================== */
+
+.note-panel,
+.warning-panel,
+.info-panel {
+    display: flex;
+    flex-direction: column; /* stack icon + content */
+    align-items: flex-start;
+    padding: 20px;
+    min-height: 180px;
+    margin-bottom: 20px; /* spacing between panels */
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Shared icon styles */
+.note-icon,
+.warning-icon,
+.info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content spacing */
+.note-content,
+.warning-content,
+.info-content {
+    margin-top: 20px; /* space below icon */
+}
+
+    .note-content p,
+    .warning-content p,
+    .info-content p {
+        margin: 0;
+        line-height: 1.6;
+        font-size: 18px;
+    }
+
+
+/* ==================================
+   WARNING PANEL (Dark Red)
+   ================================== */
+
+.warning-panel {
+    background-color: #fdecea;
+    border-left: 6px solid #8b0000;
+    color: #5f1a1a;
+}
+
+.warning-icon {
+    background-color: #8b0000;
+    color: #ffffff;
+}
+
+
+/* ==================================
+   INFO PANEL (Light Blue)
+   ================================== */
+
+.info-panel {
+    background-color: #e3f2fd;
+    border-left: 6px solid #0d47a1;
+    color: #0d47a1;
+}
+
+.info-icon {
+    background-color: #0d47a1;
+    color: #ffffff;
+}
+
+
+/* ==================================
+   NOTE PANEL (Green)
+   ================================== */
+
+.note-panel {
+    background-color: #e8f5e9;
+    border-left: 6px solid #1b5e20;
+    color: #1b5e20;
+}
+
+.note-icon {
+    background-color: #1b5e20;
+    color: #ffffff;
+}
