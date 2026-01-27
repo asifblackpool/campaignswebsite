@@ -1,0 +1,51 @@
+﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.Components;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc;
+using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
+using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
+using RazorPageCampaignsWebsite.Helpers.Wrappers;
+using System.Text.Encodings.Web;
+using Zengenti.Contensis.Delivery;
+
+namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
+{
+    public class ServiceMessageHandler : IContentHandler
+    {
+        private readonly ISerializationHelper _serializer;
+        private readonly ViewComponentRenderer _renderer;
+
+        public ServiceMessageHandler(ViewComponentRenderer renderer,ISerializationHelper serializer)
+        {
+            _renderer = renderer;
+            _serializer = serializer;
+        }
+
+        public string ContentType => "ServiceMessage";
+
+        public bool CanHandle(string className) => className == typeof(ServiceMessage).Name;
+
+        public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
+        {
+            var htmlContent = new HtmlContentBuilder();
+
+            try
+            {
+                // Deserialize the quote content
+                var content = await _serializer.DeserializeAsync<ServiceMessage>(item);
+                string temp = await _renderer.RenderAsync(ContentType, content);
+                htmlContent.AppendHtml(temp);
+
+            }
+            catch (Exception ex) 
+            {
+                htmlContent.AppendHtml($"<!-- Error processing Service Message Handler: {ex.Message} -->");
+            }
+
+           return htmlContent;
+
+        }
+
+     
+    }
+}

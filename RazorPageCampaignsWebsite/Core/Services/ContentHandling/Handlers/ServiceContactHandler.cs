@@ -17,6 +17,9 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _serializer = serializer;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
+    
         public bool CanHandle(string className) => className == typeof(ServiceContact).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)

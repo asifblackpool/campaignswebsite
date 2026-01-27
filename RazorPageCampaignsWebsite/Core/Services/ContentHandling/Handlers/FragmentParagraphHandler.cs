@@ -27,7 +27,9 @@ namespace RazorPageCampaignsWebsite.Models.Services.ContentHandling.Handlers
                 _navigationLinkHelper = navigationLinkHelper;
             }
 
-            public bool CanHandle(string className)
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
+        public bool CanHandle(string className)
                 => className == typeof(FragmentParagraph).Name;
 
             public async Task<IHtmlContent> HandleAsync(SerialisedItem item)

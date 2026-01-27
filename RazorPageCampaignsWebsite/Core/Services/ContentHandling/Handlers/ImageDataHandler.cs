@@ -18,6 +18,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _imageHelper = imageHelper;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className)
             => className == typeof(ImageData).Name;
 

@@ -24,7 +24,7 @@ namespace RazorPageCampaignsWebsite.Helpers.Serialisation
             }
             catch(Exception ex)
             {
-
+                temp = item.Content;
             }
     
             return await Task.Run(() => JsonConvert.DeserializeObject<T>(item.Content));

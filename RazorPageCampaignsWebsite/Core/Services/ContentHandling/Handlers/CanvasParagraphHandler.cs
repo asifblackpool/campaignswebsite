@@ -21,6 +21,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _textProcessor = textProcessor;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className) => className == typeof(CanvasParagraph).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)

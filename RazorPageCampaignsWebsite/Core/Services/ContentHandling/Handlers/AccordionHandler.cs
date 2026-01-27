@@ -18,6 +18,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _accordionRenderer = accordionRenderer;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className) => className == typeof(Accordion).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)

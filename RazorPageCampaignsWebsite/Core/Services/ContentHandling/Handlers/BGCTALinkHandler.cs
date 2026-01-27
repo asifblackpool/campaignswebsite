@@ -16,6 +16,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _ctaRenderer = ctaRenderer;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className)
         {
             return className == typeof(BGCTALink).Name;

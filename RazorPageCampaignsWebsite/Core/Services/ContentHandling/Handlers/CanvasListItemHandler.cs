@@ -28,6 +28,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _contentFragmentHelper = contentFragmentHelper;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className) => className == typeof(CanvasListItem).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)

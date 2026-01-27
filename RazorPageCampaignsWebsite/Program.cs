@@ -8,6 +8,7 @@ using RazorPageCampaignsWebsite.Helpers;
 using RazorPageCampaignsWebsite.Helpers.Html;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Renderers;
+using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
 using RazorPageCampaignsWebsite.Helpers.Serialisation;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
 using RazorPageCampaignsWebsite.Infrastructure.Repositories;
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IBgCtaLinkRenderer, BgCtaLinkRenderer>();
 builder.Services.AddScoped<IGovUkAccordionWithCtaButtonRenderer, GovUkAccordionWithCtaButtonRenderer>();
 builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWithImagesRenderer>();
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
+builder.Services.AddScoped<ViewComponentRenderer>();
 
 
 //Processors
@@ -74,8 +76,10 @@ builder.Services
         options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
     });
 
-builder.Services.AddScoped<BreadcrumbService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BreadcrumbService>();
+
+
 
 //automatic register all content handlers 
 builder.Services.AddContentHandlers();

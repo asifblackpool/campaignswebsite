@@ -21,6 +21,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             };
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className)
             => className == typeof(HeadingComponent).Name;
 

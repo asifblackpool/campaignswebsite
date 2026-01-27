@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="~/static/css/link-button.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/panel.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/youtube.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/servicemessage.css" asp-append-version="true" />
 
 
     <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
@@ -77,8 +78,19 @@
                                 &nbsp;
                             </div>
                             <div class="clearfix grid-block-5">
-                                <partial name="Global/_breadcrumb" />
-                                <partial name="Global/_landingtitle" />
+                                @try
+                                {
+                                    @await Component.InvokeAsync("Breadcrumb")
+                                }
+                                catch (Exception ex)
+                                {
+                                    <div style="background: #ffcccc; padding: 10px; margin: 10px;">
+                                        <strong>Breadcrumb Error:</strong> @ex.Message
+                                        <br />
+                                        <small>@ex.StackTrace</small>
+                                    </div>
+                                }
+                            @await Component.InvokeAsync("Title")
                                 <partial name="Global/_linkstopdf" />
                             </div>
                         </div>

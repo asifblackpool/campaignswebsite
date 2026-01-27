@@ -19,6 +19,8 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _formHelper = formHelper;
         }
 
+        string IContentHandler.ContentType => throw new NotImplementedException();
+
         public bool CanHandle(string className) => className == typeof(WebForms).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
