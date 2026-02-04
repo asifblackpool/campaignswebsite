@@ -1,5 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Templates;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RazorPageCampaignsWebsite.Core.Models;
 
 namespace RazorPageCampaignsWebsite.Components

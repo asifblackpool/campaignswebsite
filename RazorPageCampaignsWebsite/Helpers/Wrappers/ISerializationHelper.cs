@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.GenericTypes;
 
 namespace RazorPageCampaignsWebsite.Helpers.Wrappers
 {

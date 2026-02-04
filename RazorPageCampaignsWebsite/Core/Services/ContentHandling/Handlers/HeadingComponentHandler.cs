@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Blackpool.Zengenti.CMS.Models.Canvas.Headers;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.Canvas.Headers;
+using Content.Modelling.Models.GenericTypes;
 
 using Newtonsoft.Json;
-using Blackpool.Zengenti.CMS.Models.Canvas.Helpers;
+using Content.Modelling.Models.Canvas.Helpers;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers

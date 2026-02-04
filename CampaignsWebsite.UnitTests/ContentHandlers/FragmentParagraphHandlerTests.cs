@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
+﻿using Content.Modelling.Models.Canvas.Paragraphs;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using RazorPageCampaignsWebsite.Models.Services.ContentHandling.Handlers;

@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Code;
+﻿using Content.Modelling.Models.Canvas.Code;
 using Moq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;

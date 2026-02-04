@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.Canvas.Paragraphs;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using Moq;
 using Newtonsoft.Json;

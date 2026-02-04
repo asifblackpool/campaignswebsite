@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.GenericTypes;
 using Content.Modelling.Models.Components;
 using Microsoft.AspNetCore.Html;
 using Newtonsoft.Json;

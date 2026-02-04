@@ -1,7 +1,7 @@
 ﻿// Core/Services/ContentHandling/Handlers/AccordionWithCtaHandler.cs (Simplified)
-using Blackpool.Zengenti.CMS.Constants;
-using Blackpool.Zengenti.CMS.Models.Components;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Constants;
+using Content.Modelling.Models.Components;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

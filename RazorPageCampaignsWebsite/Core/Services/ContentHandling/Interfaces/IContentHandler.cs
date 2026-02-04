@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces

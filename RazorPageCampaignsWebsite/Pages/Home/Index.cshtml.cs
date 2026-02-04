@@ -3,7 +3,7 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Core.Models;
 using RazorPageCampaignsWebsite.Core.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Templates;
+using Content.Modelling.Models.Templates;
 
 namespace RazorPageCampaignsWebsite.Pages;
 

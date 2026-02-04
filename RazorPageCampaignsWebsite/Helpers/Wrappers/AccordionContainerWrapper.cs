@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Helpers;
-using Blackpool.Zengenti.CMS.Models.Canvas.Tables;
+﻿using Content.Modelling.Models.Canvas.Helpers;
+using Content.Modelling.Models.Canvas.Tables;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;

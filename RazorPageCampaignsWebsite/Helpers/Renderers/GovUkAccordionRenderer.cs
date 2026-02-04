@@ -1,7 +1,7 @@
 ﻿
     using Microsoft.AspNetCore.Html;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using Blackpool.Zengenti.CMS.Models.Components;
+    using Content.Modelling.Models.Components;
     using System.Text.Encodings.Web;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 

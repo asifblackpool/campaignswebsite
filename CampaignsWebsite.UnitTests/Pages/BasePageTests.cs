@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Templates;
+﻿using Content.Modelling.Models.Templates;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RazorPageCampaignsWebsite.Core.Interfaces;

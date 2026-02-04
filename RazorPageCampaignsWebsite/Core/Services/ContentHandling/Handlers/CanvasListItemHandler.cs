@@ -1,7 +1,7 @@
-﻿using Blackpool.Zengenti.CMS.Helpers;
-using Blackpool.Zengenti.CMS.Models.Canvas.Helpers;
-using Blackpool.Zengenti.CMS.Models.Canvas.Lists;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Helpers;
+using Content.Modelling.Models.Canvas.Helpers;
+using Content.Modelling.Models.Canvas.Lists;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;

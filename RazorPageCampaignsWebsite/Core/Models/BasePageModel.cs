@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Templates;
+﻿using Content.Modelling.Models.Interfaces;
+using Content.Modelling.Models.Templates;
 using Content.Modelling.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPageCampaignsWebsite.Core.Interfaces;
@@ -85,6 +85,7 @@ namespace RazorPageCampaignsWebsite.Core.Models
         private void StoreModel(List<T> items)
         {
             ViewData["Model"] = items != null && items.Count > 0 ? items.Take(1).FirstOrDefault() : null;
+            
             var temp = ViewData["Model"];
         }
 

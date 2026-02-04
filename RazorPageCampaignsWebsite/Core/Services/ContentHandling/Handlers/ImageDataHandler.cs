@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Images;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.Canvas.Images;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;

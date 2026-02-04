@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Components;
+﻿using Content.Modelling.Models.Components;
 using Microsoft.AspNetCore.Html;
 
 namespace RazorPageCampaignsWebsite.Helpers.Interfaces

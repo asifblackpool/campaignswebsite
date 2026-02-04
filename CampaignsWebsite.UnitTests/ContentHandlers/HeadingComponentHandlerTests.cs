@@ -3,8 +3,8 @@ using Xunit;
 using Microsoft.AspNetCore.Html;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
-using Blackpool.Zengenti.CMS.Models.Canvas.Headers;
+using Content.Modelling.Models.GenericTypes;
+using Content.Modelling.Models.Canvas.Headers;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 

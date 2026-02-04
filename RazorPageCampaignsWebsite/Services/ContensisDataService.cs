@@ -28,10 +28,15 @@ namespace RazorPageCampaignsWebsite.Services
 
             try
             {
+                
+                
+                
                 var entryId = (node != null && node.EntryId != null) ? node.EntryId : node?.Id;
                 if (entryId != null)
                 {
                     var entry = client.Entries.Get<T>((Guid)entryId, null, 1);
+                    
+                    
                     _data.Add(entry);
                 }
               

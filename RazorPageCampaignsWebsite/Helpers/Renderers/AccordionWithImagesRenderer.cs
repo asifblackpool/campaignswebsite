@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Helpers;
-using Blackpool.Zengenti.CMS.Models.Components;
+﻿using Content.Modelling.Helpers;
+using Content.Modelling.Models.Components;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net.NetworkInformation;

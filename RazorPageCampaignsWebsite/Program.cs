@@ -18,9 +18,23 @@ using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Load environment variables FIRST
+DotNetEnv.Env.TraversePath().Load();
+
+// Configure ContensisClient BEFORE registering services
+ContensisClient.Configure(
+    new ContensisClientConfiguration(
+        rootUrl: string.Format("https://api-{0}.cloud.contensis.com", DotNetEnv.Env.GetString("ALIAS")),
+        projectApiId: DotNetEnv.Env.GetString("PROJECT_API_ID"),
+        clientId: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_ID"),
+        sharedSecret: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_SECRET")
+    )
+);
+
+// Get the real client
+var contensisClient = ContensisClient.Create();
 
 // Register generic data service
 builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
@@ -28,9 +42,11 @@ builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataServic
 // Register IContensisClient as a singleton
 builder.Services.AddSingleton<IContensisClient>(sp =>
 {
-    var realClient = ContensisClient.Create();
-    return new ContensisClientWrapper(realClient);
+    return new ContensisClientWrapper(contensisClient);
 });
+
+// Register ContensisClient for ViewComponents and other services that need the concrete type
+builder.Services.AddSingleton(sp => contensisClient);
 
 //register repositories
 builder.Services.AddTransient<IContentRepository, ContensisContentRepository>();
@@ -40,7 +56,7 @@ builder.Services.AddScoped<ISerializationHelper, SerializationHelper>();
 builder.Services.AddScoped<ICanvasPanelHelper, CanvasPanelHelperWrapper>();
 builder.Services.AddScoped<IPanelHelper, PanelHelperWrapper>();
 builder.Services.AddScoped<IParagraphHelper, ParagraphHelperWrapper>();
-builder.Services.AddScoped<INavigationLinkHelper, NavigationLinkHelperWrapper> ();
+builder.Services.AddScoped<INavigationLinkHelper, NavigationLinkHelperWrapper>();
 builder.Services.AddScoped<IFormHelper, FormHelperWrapper>();
 builder.Services.AddScoped<IContentFragmentHelper, ContentFragmentHelper>();
 builder.Services.AddScoped<IImageHelper, ImageHelperWrapper>();
@@ -52,10 +68,8 @@ builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWith
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
-
 //Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
-
 
 // Configure logging
 builder.Services.AddLogging(configure =>
@@ -67,26 +81,19 @@ builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
-
         // Override root to always render blog post at '/'
         options.Conventions.AddPageRoute("/Home/Index", WebsiteConstants.SITE_VIEW_PATH);
         options.Conventions.AddPageRoute("/Home/Details", WebsiteConstants.SITE_VIEW_PATH + "{*slug}");
-
-
         options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
     });
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BreadcrumbService>();
 
-
-
 //automatic register all content handlers 
 builder.Services.AddContentHandlers();
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -109,24 +116,10 @@ var rewriteOptions = new RewriteOptions()
 
 app.UseRewriter(rewriteOptions);
 
-
-
-
 app.UseRouting();
 // app.UseHttpLogging(); NO SUPPORT FOR .NET 9,0 
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");
 app.MapRazorPages();
-
-DotNetEnv.Env.TraversePath().Load();
-
-ContensisClient.Configure(
-    new ContensisClientConfiguration(
-        rootUrl: string.Format("https://api-{0}.cloud.contensis.com", DotNetEnv.Env.GetString("ALIAS")),
-        projectApiId: DotNetEnv.Env.GetString("PROJECT_API_ID"),
-        clientId: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_ID"),
-        sharedSecret: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_SECRET")
-    )
-);
 
 app.Run();

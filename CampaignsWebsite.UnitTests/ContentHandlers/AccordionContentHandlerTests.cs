@@ -2,14 +2,14 @@
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Xunit;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.GenericTypes;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Core.Services.ContentProcessing.Interfaces;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Blackpool.Zengenti.CMS.Models.Components;
+using Content.Modelling.Models.Components;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 

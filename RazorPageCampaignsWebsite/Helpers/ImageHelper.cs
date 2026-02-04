@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Images;
+﻿using Content.Modelling.Models.Canvas.Images;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Helpers

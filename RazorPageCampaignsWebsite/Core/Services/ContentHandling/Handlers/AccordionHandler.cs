@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Accordions;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.Accordions;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;

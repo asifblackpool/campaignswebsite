@@ -1,8 +1,8 @@
 ﻿
-using Blackpool.Zengenti.CMS.Helpers;
-using Blackpool.Zengenti.CMS.Models.Canvas.Common;
-using Blackpool.Zengenti.CMS.Models.Canvas.Helpers;
-using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
+using Content.Modelling.Helpers;
+using Content.Modelling.Models.Canvas.Common;
+using Content.Modelling.Models.Canvas.Helpers;
+using Content.Modelling.Models.Canvas.Paragraphs;
 using RazorPageCampaignsWebsite.Constants;
 using Zengenti.Contensis.Delivery;
 

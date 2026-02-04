@@ -10,20 +10,20 @@ using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
-    public class ServiceMessageHandler : IContentHandler
+    public class DividerHandler : IContentHandler
     {
         private readonly ISerializationHelper _serializer;
         private readonly ViewComponentRenderer _renderer;
 
-        public ServiceMessageHandler(ViewComponentRenderer renderer,ISerializationHelper serializer)
+        public DividerHandler(ViewComponentRenderer renderer, ISerializationHelper serializer)
         {
             _renderer = renderer;
             _serializer = serializer;
         }
 
-        public string ContentType => "ServiceMessage";
+        public string ContentType => "Divider";
 
-        public bool CanHandle(string className) => className == typeof(ServiceMessage).Name;
+        public bool CanHandle(string className) => className == typeof(Divider).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
         {
@@ -32,20 +32,20 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             try
             {
                 // Deserialize the quote content
-                var content = await _serializer.DeserializeAsync<ServiceMessage>(item);
+                var content = await _serializer.DeserializeAsync<Divider>(item);
                 string temp = await _renderer.RenderAsync(ContentType, content);
                 htmlContent.AppendHtml(temp);
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                htmlContent.AppendHtml($"<!-- Error processing Service Message Handler: {ex.Message} -->");
+                htmlContent.AppendHtml($"<!-- Error processing Divider Handler: {ex.Message} -->");
             }
 
-           return htmlContent;
+            return htmlContent;
 
         }
 
-     
+
     }
 }

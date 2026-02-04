@@ -1,11 +1,11 @@
 ﻿
-using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.Canvas.Paragraphs;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
-using Blackpool.Zengenti.CMS.Helpers;
+using Content.Modelling.Helpers;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using Sprache;
 

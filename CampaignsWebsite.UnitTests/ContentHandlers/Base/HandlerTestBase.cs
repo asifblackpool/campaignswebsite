@@ -2,7 +2,7 @@
 
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.GenericTypes;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using Xunit;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;

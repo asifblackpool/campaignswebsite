@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.GenericTypes;
 using Content.Modelling.Models.Canvas.Images;
 using Moq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;

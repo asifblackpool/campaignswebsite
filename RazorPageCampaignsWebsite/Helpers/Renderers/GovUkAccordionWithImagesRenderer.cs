@@ -2,11 +2,11 @@
 
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Blackpool.Zengenti.CMS.Models.Components;
+using Content.Modelling.Models.Components;
 using System.Text.Encodings.Web;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using Zengenti.Contensis.Delivery;
-using Blackpool.Zengenti.CMS.Helpers;
+using Content.Modelling.Helpers;
 
 namespace RazorPageCampaignsWebsite.Helpers.Renderers
 {

@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Quote;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.Canvas.Quote;
+using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;

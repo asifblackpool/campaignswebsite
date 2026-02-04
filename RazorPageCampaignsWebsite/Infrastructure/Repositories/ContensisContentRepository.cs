@@ -9,8 +9,8 @@ namespace RazorPageCampaignsWebsite.Infrastructure.Repositories
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Blackpool.Zengenti.CMS.Models.Interfaces;
-    using Blackpool.Zengenti.CMS.Models.Templates;
+    using Content.Modelling.Models.Interfaces;
+    using Content.Modelling.Models.Templates;
 
     public class ContensisContentRepository : IContentRepository
     {

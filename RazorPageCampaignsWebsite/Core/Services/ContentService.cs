@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Templates;
+﻿using Content.Modelling.Models.Interfaces;
+using Content.Modelling.Models.Templates;
 using Content.Modelling.Models.Interfaces;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 

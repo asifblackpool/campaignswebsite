@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
+﻿using Content.Modelling.Models.Canvas.Paragraphs;
 using Microsoft.AspNetCore.Html;
 
 namespace RazorPageCampaignsWebsite.Helpers.Interfaces

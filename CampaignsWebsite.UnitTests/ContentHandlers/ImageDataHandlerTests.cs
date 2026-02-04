@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Xunit;
 using Newtonsoft.Json;
-using Blackpool.Zengenti.CMS.Models.Canvas.Images;
+using Content.Modelling.Models.Canvas.Images;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;

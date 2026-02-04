@@ -1,5 +1,5 @@
-﻿using Blackpool.Zengenti.CMS.Models.Accordions;
-using Blackpool.Zengenti.CMS.Models.Components;
+﻿using Content.Modelling.Models.Accordions;
+using Content.Modelling.Models.Components;
 using Microsoft.AspNetCore.Html;
 using Moq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;

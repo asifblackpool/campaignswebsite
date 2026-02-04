@@ -1,7 +1,7 @@
 ﻿// ContentHandlers/CanvasParagraphHandlerTests.cs
 using Moq;
 using Xunit;
-using Blackpool.Zengenti.CMS.Models.Canvas.Paragraphs;
+using Content.Modelling.Models.Canvas.Paragraphs;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;

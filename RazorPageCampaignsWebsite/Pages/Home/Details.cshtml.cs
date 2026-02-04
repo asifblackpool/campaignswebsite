@@ -6,7 +6,7 @@ using RazorPageCampaignsWebsite.Core.Models;
 using RazorPageCampaignsWebsite.Services.Interfaces;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Core.Interfaces;
-using Blackpool.Zengenti.CMS.Models.Templates;
+using Content.Modelling.Models.Templates;
 
 namespace RazorPageCampaignsWebsite.Pages.Home
 {
@@ -33,6 +33,7 @@ namespace RazorPageCampaignsWebsite.Pages.Home
                 await base.OnGetAsync();
             }
             Items = Items.Take(1).ToList();
+          
             LogAction("Getting Campaign details specific data loaded");
         }
 

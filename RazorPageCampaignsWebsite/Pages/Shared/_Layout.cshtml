@@ -1,5 +1,7 @@
-﻿@using RazorPageCampaignsWebsite.Core.Models;
-@using Blackpool.Zengenti.CMS.Helpers;
+﻿@using Content.Modelling.Models.Templates
+@using RazorPageCampaignsWebsite.Core.Models;
+@using Content.Modelling.Helpers;
+
 @{
     var url = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
     string baseUrl = UrlHelper.GetBaseAddressUrl(url.ToString());
@@ -26,6 +28,7 @@
     <link rel="stylesheet" href="~/static/css/panel.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/youtube.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/servicemessage.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/AdditionalInformation.css" asp-append-version="true" />
 
 
     <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
@@ -78,20 +81,20 @@
                                 &nbsp;
                             </div>
                             <div class="clearfix grid-block-5">
-                                @try
-                                {
-                                    @await Component.InvokeAsync("Breadcrumb")
-                                }
-                                catch (Exception ex)
-                                {
-                                    <div style="background: #ffcccc; padding: 10px; margin: 10px;">
-                                        <strong>Breadcrumb Error:</strong> @ex.Message
-                                        <br />
-                                        <small>@ex.StackTrace</small>
-                                    </div>
-                                }
-                            @await Component.InvokeAsync("Title")
-                                <partial name="Global/_linkstopdf" />
+                                    @try
+                                    {
+                                        @await Component.InvokeAsync("Breadcrumb")
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        <div style="background: #ffcccc; padding: 10px; margin: 10px;">
+                                            <strong>Breadcrumb Error:</strong> @ex.Message
+                                            <br />
+                                            <small>@ex.StackTrace</small>
+                                        </div>
+                                    }
+                                    @await Component.InvokeAsync("Title")
+                                    <partial name="Global/_linkstopdf" />
                             </div>
                         </div>
                         <div class="row zero-pad-left zero-pad-right">
@@ -99,7 +102,8 @@
                                     @RenderBody()
                             </div>
                             <div id="sidebar" class="col-xs-12 col-sm-12 col-md-12 col-md-2 col-md-pull-10 clearfix zero-pad-all">
-
+                                <!--Additional Information to go here -->
+                                @await Component.InvokeAsync("AdditionalInformation")   
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-﻿using Blackpool.Zengenti.CMS.Models.GenericTypes;
+﻿using Content.Modelling.Models.GenericTypes;
 using Newtonsoft.Json;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
 

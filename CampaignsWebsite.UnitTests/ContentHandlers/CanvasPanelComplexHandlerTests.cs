@@ -1,10 +1,10 @@
 ﻿using Moq;
 using Xunit;
 using Microsoft.AspNetCore.Html;
-using Blackpool.Zengenti.CMS.Models.GenericTypes;
+using Content.Modelling.Models.GenericTypes;
 using System.Threading.Tasks;
 using System;
-using Blackpool.Zengenti.CMS.Models.Canvas.Panels;
+using Content.Modelling.Models.Canvas.Panels;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
