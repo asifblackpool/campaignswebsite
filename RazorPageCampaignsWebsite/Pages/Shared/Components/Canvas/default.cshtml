@@ -6,10 +6,12 @@
 @inject ContentHandlerFactory HandlerFactory
 @{
     bool showHandler = false;
+    int counter = 1;
 }
 @if (Model?.Items?.Count > 0)
 {
     <div class="content-container">
+  
     @foreach (var item in Model.Items)
     {
         try 
@@ -20,8 +22,13 @@
                     @Html.Raw(item.ClassName)
                     <br/>
                 }
-            var handler = HandlerFactory.GetHandler(item.ClassName);
-            @await handler.HandleAsync(item)
+                var handler = HandlerFactory.GetHandler(item.ClassName);
+                if (counter < 20)
+                {
+                    @await handler.HandleAsync(item)
+                }
+        
+            counter++;
         }
         catch (Exception ex)
         {

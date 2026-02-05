@@ -45,7 +45,7 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Unable to load gallery</h3>
                     <p id="errorMessage"></p>
-                    <button onclick="GalleryService.init(window.galleryData)" style="margin-top: 20px; padding: 10px 20px; background: #4a6ee0; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <button onclick="galleryservices.init(window.galleryData)" style="margin-top: 20px; padding: 10px 20px; background: #4a6ee0; color: white; border: none; border-radius: 5px; cursor: pointer;">
                         Retry
                     </button>
                 </div>
@@ -121,11 +121,11 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
         window.galleryData = @Html.Raw(imageData)
     </script>
 
-    <script src="/js/galleryservices.js"></script>
+    <script type="text/javascript" src="/js/galleryservices.js"></script>
 }
 else
 {

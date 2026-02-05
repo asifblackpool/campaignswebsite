@@ -1,5 +1,5 @@
-﻿window.GalleryServices = (function () {
-    'use strict';
+﻿"use strict";
+(function (gallerieservices, $, undefined) {
 
     // Gallery configuration
     const config = {
@@ -12,20 +12,18 @@
 
     // State management
     let currentIndex = 0;
-    let imageGallery = null; // This will now be your array directly
+    let imageGallery = null;
 
     // ==================== PRIVATE FUNCTIONS ====================
 
-    // Utility functions - UPDATED for SimpleImage structure
+    // Utility functions
     const _getImageUrl = (image) => {
-        // Check for Url property (SimpleImage.Url)
         if (image?.Url) return image.Url;
         if (image?.url) return image.url;
         return null;
     };
 
     const _getAltText = (image) => {
-        // Check for AltText property
         if (image?.AltText?.trim()) return image.AltText;
         if (image?.altText?.trim()) return image.altText;
         if (image?.Caption?.trim()) return image.Caption;
@@ -74,6 +72,43 @@
 
         setActiveImage(newIndex);
         openModal();
+    };
+
+    // Define closeModal as a private function
+    const closeModal = () => {
+        const modalOverlay = document.getElementById(config.modalOverlayId);
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    //Define openModal as a private function
+    const openModal = (index) => {
+        if (index !== undefined && index >= 0 && index < imageGallery.length) {
+            setActiveImage(index);
+        }
+
+        const image = imageGallery[currentIndex];
+        const imageUrl = _getImageUrl(image);
+        const altText = _getAltText(image);
+
+        if (!imageUrl) return;
+
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCaption = document.getElementById('modalCaption');
+
+        if (modalImage) modalImage.src = imageUrl;
+        if (modalImage) modalImage.alt = altText;
+        if (modalTitle) modalTitle.textContent = altText;
+        if (modalCaption) modalCaption.textContent = image.Caption || image.caption || "";
+
+        const modalOverlay = document.getElementById(config.modalOverlayId);
+        if (modalOverlay) {
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     };
 
     // Event listeners setup
@@ -151,39 +186,6 @@
 
     // ==================== PUBLIC FUNCTIONS ====================
 
-    const initGallery = (galleryData) => {
-        try {
-            // Handle both array and object with Images property
-            if (Array.isArray(galleryData)) {
-                imageGallery = galleryData; // Direct array
-            } else if (galleryData?.Images && Array.isArray(galleryData.Images)) {
-                imageGallery = galleryData.Images; // Extract Images array
-            } else {
-                imageGallery = galleryData; // Try whatever was passed
-            }
-
-            if (!imageGallery || !Array.isArray(imageGallery) || imageGallery.length === 0) {
-                _showError("No images found in the gallery.");
-                return;
-            }
-
-            // Hide loading state
-            const loadingState = document.getElementById('loadingState');
-            if (loadingState) loadingState.style.display = 'none';
-
-            // Show main image if hidden
-            const mainImage = document.getElementById(config.mainImageId);
-            if (mainImage) mainImage.style.display = 'block';
-
-            // Initialize event listeners
-            _setupEventListeners();
-
-        } catch (error) {
-            console.error('Error initializing gallery:', error);
-            _showError("Error loading gallery. Please try again.");
-        }
-    };
-
     const setActiveImage = (index) => {
         if (!imageGallery || !Array.isArray(imageGallery) || index < 0 || index >= imageGallery.length) {
             return;
@@ -218,6 +220,7 @@
         _scrollThumbnailIntoView(index);
     };
 
+    // Scroll thumbnails function
     const scrollThumbnails = (direction) => {
         const container = document.getElementById(config.thumbnailsContainerId);
         if (container) {
@@ -228,59 +231,71 @@
         }
     };
 
-    const openModal = (index) => {
-        if (index !== undefined && index >= 0 && index < imageGallery.length) {
-            setActiveImage(index);
-        }
+    // ==================== PUBLIC API ====================
 
-        const image = imageGallery[currentIndex];
-        const imageUrl = _getImageUrl(image);
-        const altText = _getAltText(image);
+    gallerieservices.init = function (galleryData) {
+        try {
+            // Handle both array and object with Images property
+            if (Array.isArray(galleryData)) {
+                imageGallery = galleryData;
+            } else if (galleryData?.Images && Array.isArray(galleryData.Images)) {
+                imageGallery = galleryData.Images;
+            } else {
+                imageGallery = galleryData;
+            }
 
-        if (!imageUrl) return;
+            if (!imageGallery || !Array.isArray(imageGallery) || imageGallery.length === 0) {
+                _showError("No images found in the gallery.");
+                return;
+            }
 
-        const modalImage = document.getElementById('modalImage');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalCaption = document.getElementById('modalCaption');
+            // Hide loading state
+            const loadingState = document.getElementById('loadingState');
+            if (loadingState) loadingState.style.display = 'none';
 
-        if (modalImage) modalImage.src = imageUrl;
-        if (modalImage) modalImage.alt = altText;
-        if (modalTitle) modalTitle.textContent = altText;
-        if (modalCaption) modalCaption.textContent = image.Caption || image.caption || "";
+            // Show main image if hidden
+            const mainImage = document.getElementById(config.mainImageId);
+            if (mainImage) mainImage.style.display = 'block';
 
-        const modalOverlay = document.getElementById(config.modalOverlayId);
-        if (modalOverlay) {
-            modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            // Initialize event listeners
+            _setupEventListeners();
+
+        } catch (error) {
+            console.error('Error initializing gallery:', error);
+            _showError("Error loading gallery. Please try again.");
         }
     };
 
-    const closeModal = () => {
-        const modalOverlay = document.getElementById(config.modalOverlayId);
-        if (modalOverlay) {
-            modalOverlay.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
+    gallerieservices.setActiveImage = function (index) {
+        setActiveImage(index);
     };
 
-    // ==================== INITIALIZATION ====================
+    gallerieservices.scrollThumbnails = function (direction) {
+        scrollThumbnails(direction);
+    };
 
+    gallerieservices.openModal = function (index) {
+        openModal(index);
+    };
+
+    gallerieservices.closeModal = function () {
+        closeModal();
+    };
+
+    // Optional: Add callback function like accordionservices
+    gallerieservices.callback = function (cb, id) {
+        // You can implement callback functionality if needed
+        console.log('Callback registered for gallery');
+    };
+
+    // Optional: Auto-initialize if window.galleryData exists
     const _initialize = () => {
         if (window.galleryData) {
-            initGallery(window.galleryData);
+            gallerieservices.init(window.galleryData);
         }
     };
 
-    // Initialize gallery when DOM is ready
+    // Auto-initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', _initialize);
 
-    // Return public API
-    return {
-        init: initGallery,
-        setActiveImage,
-        openModal,
-        closeModal,
-        scrollThumbnails
-    };
-
-})();
+})(window.gallerieservices = window.gallerieservices || {}, jQuery);

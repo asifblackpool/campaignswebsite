@@ -17,12 +17,23 @@ namespace RazorPageCampaignsWebsite.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, BreadcrumbService breadcrumbService)
+        public async Task InvokeAsync(HttpContext context, BreadcrumbService breadcrumbService, ILogger<BreadcrumbMiddleware> logger)
         {
-            // Reset and enable auto-generation by default
-            breadcrumbService.Reset();
+            logger.LogInformation("BreadcrumbMiddleware starting");
+
+            try
+            {
+                breadcrumbService.Reset();
+                logger.LogInformation("Breadcrumbs reset successfully");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to reset breadcrumbs");
+                // Continue anyway
+            }
 
             await _next(context);
+            logger.LogInformation("BreadcrumbMiddleware completed");
         }
     }
 }
