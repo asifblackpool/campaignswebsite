@@ -17,14 +17,15 @@
 
 @{
 
-  
+
     List<SimpleImage> images = new List<SimpleImage>();
-    foreach(var img in Model.MultipleImage)
+    foreach (var img in Model.MultipleImage)
     {
-        images.Add(new SimpleImage() { 
-                    AltText = img.AltText,
-                    Caption = img.Caption,
-                    Url = ImageHelper.GetImageUrl(img.ImageUrl)
+        images.Add(new SimpleImage()
+        {
+            AltText = img.AltText,
+            Caption = img.Caption,
+            Url = ImageHelper.GetImageUrl(img.ImageUrl)
         });
     }
 
@@ -45,7 +46,8 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Unable to load gallery</h3>
                     <p id="errorMessage"></p>
-                    <button onclick="galleryservices.init(window.galleryData)" style="margin-top: 20px; padding: 10px 20px; background: #4a6ee0; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    <button onclick="galleryservices.init(window.galleryData)"
+                        style="margin-top: 20px; padding: 10px 20px; background: #4a6ee0; color: white; border: none; border-radius: 5px; cursor: pointer;">
                         Retry
                     </button>
                 </div>
@@ -57,11 +59,8 @@
                 var firstAltText = !string.IsNullOrEmpty(firstImage.AltText) ? firstImage.AltText : firstImage.Caption;
             }
 
-            <img id="mainImage" class="main-image"
-                 src="@firstImageUrl"
-                 alt="@firstAltText"
-                 style="display: block;"
-                 data-index="0">
+            <img id="mainImage" class="main-image" src="@firstImageUrl" alt="@firstAltText" style="display: block;"
+                data-index="0">
             <div class="image-info">
                 <h3 id="mainImageTitle" class="image-title">@firstAltText</h3>
                 <p id="mainImageCaption" class="image-caption">@firstImage.Caption</p>
@@ -83,9 +82,7 @@
 
                     if (!string.IsNullOrEmpty(imageUrl))
                     {
-                        <div class="thumbnail @(i == 0 ? "active" : "")"
-                             data-index="@i"
-                             title="@altText">
+                        <div class="thumbnail @(i == 0 ? "active" : "")" data-index="@i" title="@altText">
                             <img src="@imageUrl" alt="@altText">
                         </div>
                     }
@@ -123,9 +120,12 @@
 
     <script type="text/javascript">
         window.galleryData = @Html.Raw(imageData)
-    </script>
+            window.addEventListener('load', function () {
+                console.log('All resources loaded');
+                galleryservices.init(window.galleryData);
+            });
 
-    <script type="text/javascript" src="/js/galleryservices.js"></script>
+    </script>
 }
 else
 {

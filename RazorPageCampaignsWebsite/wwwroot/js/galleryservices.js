@@ -1,5 +1,5 @@
 ﻿"use strict";
-(function (gallerieservices, $, undefined) {
+(function (galleryservices, $, undefined) {
 
     // Gallery configuration
     const config = {
@@ -233,8 +233,9 @@
 
     // ==================== PUBLIC API ====================
 
-    gallerieservices.init = function (galleryData) {
+    galleryservices.init = function (galleryData) {
         try {
+            console.log('call gallery services init');
             // Handle both array and object with Images property
             if (Array.isArray(galleryData)) {
                 imageGallery = galleryData;
@@ -266,36 +267,36 @@
         }
     };
 
-    gallerieservices.setActiveImage = function (index) {
+    galleryservices.setActiveImage = function (index) {
         setActiveImage(index);
     };
 
-    gallerieservices.scrollThumbnails = function (direction) {
+    galleryservices.scrollThumbnails = function (direction) {
         scrollThumbnails(direction);
     };
 
-    gallerieservices.openModal = function (index) {
+    galleryservices.openModal = function (index) {
         openModal(index);
     };
 
-    gallerieservices.closeModal = function () {
+    galleryservices.closeModal = function () {
         closeModal();
     };
 
     // Optional: Add callback function like accordionservices
-    gallerieservices.callback = function (cb, id) {
+    galleryservices.callback = function (cb, id) {
         // You can implement callback functionality if needed
         console.log('Callback registered for gallery');
     };
 
     // Optional: Auto-initialize if window.galleryData exists
     const _initialize = () => {
-        if (window.galleryData) {
-            gallerieservices.init(window.galleryData);
-        }
+        //if (window.galleryData) {
+        //   galleryservices.init(window.galleryData);
+        //}
     };
 
     // Auto-initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', _initialize);
+    //document.addEventListener('DOMContentLoaded', _initialize);
 
-})(window.gallerieservices = window.gallerieservices || {}, jQuery);
+})(window.galleryservices = window.galleryservices || {}, jQuery);
