@@ -290,11 +290,11 @@
     };
 
     // Optional: Auto-initialize if window.galleryData exists
-    const _initialize = () => {
+    //const _initialize = () => {
         //if (window.galleryData) {
         //   galleryservices.init(window.galleryData);
         //}
-    };
+    // };
 
     // Auto-initialize when DOM is ready
     //document.addEventListener('DOMContentLoaded', _initialize);
