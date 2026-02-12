@@ -1,6 +1,5 @@
 ﻿using Content.Modelling.Models.Interfaces;
 using Content.Modelling.Models.Templates;
-using Content.Modelling.Models.Interfaces;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 using Content.Modelling.Models.Templates.Base;
 

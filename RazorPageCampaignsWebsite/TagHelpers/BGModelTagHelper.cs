@@ -91,7 +91,7 @@ namespace RazorPageCampaignsWebsite.TagHelpers
             {
                 output.TagName = "div";
                 output.Attributes.SetAttribute("class", "alert alert-danger");
-                output.Content.SetHtmlContent($"Error rendering content: {ex.Message}");
+                output.PostElement.AppendHtml($"<p>Error rendering content: {ex.Message}</p>");
             }
 
 
