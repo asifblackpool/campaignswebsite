@@ -1,9 +1,9 @@
 ﻿using Content.Modelling.Models.GenericTypes;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace RazorPageCampaignsWebsite.Components
 {
+    [ViewComponent]
     public class CanvasViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke(SerialisedContent content)

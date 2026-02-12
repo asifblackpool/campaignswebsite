@@ -8,7 +8,7 @@ using Zengenti;
 
 namespace RazorPageCampaignsWebsite.Components.ImageGalleryNew
 {
-    public class ImageGalleryNewViewComponent : ViewComponent
+    public class WebFormsViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke(Content.Modelling.Models.Components.MultipleImages ign)
         {

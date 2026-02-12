@@ -4,13 +4,10 @@ using Moq;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CampaignsWebsite.UnitTests.ContentHandlers.Base;
 using Xunit;
+using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
 
 namespace CampaignsWebsite.UnitTests.ContentHandlers
 {
@@ -18,13 +15,20 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
     {
         private readonly Mock<ISerializationHelper> _serializerMock;
         private readonly Mock<IFormHelper> _formHelperMock;
+        private readonly Mock<ViewComponentRenderer> _rendererMock;
         private readonly WebFormsHandler _handler;
 
         public WebFormsHandlerTests()
         {
             _serializerMock = CreateSerializerMock();
             _formHelperMock = new Mock<IFormHelper>();
-            _handler = new WebFormsHandler(_serializerMock.Object, _formHelperMock.Object);
+            _rendererMock = new Mock<ViewComponentRenderer>();
+
+            _handler = new WebFormsHandler(
+                _rendererMock.Object,
+                _serializerMock.Object,
+                _formHelperMock.Object
+            );
         }
 
         [Fact]
@@ -44,10 +48,14 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
             };
 
             _serializerMock.Setup(x => x.DeserializeAsync<WebForms>(item))
-                         .ReturnsAsync(expectedForm);
+                           .ReturnsAsync(expectedForm);
 
             _formHelperMock.Setup(x => x.TagBuilder("lgwebsite", "form123"))
-                         .Returns(new HtmlString("<form id='form123'></form>"));
+                           .Returns(new HtmlString("<form id='form123'></form>"));
+
+            // Mock the renderer to just return the same HTML
+            _rendererMock.Setup(x => x.RenderAsync(It.IsAny<string>(), expectedForm))
+                         .ReturnsAsync("<form id='form123'></form>");
 
             // Act
             var result = await _handler.HandleAsync(item);
@@ -63,7 +71,7 @@ namespace CampaignsWebsite.UnitTests.ContentHandlers
             // Arrange
             var item = CreateTestItem("{}", typeof(WebForms));
             _serializerMock.Setup(x => x.DeserializeAsync<WebForms>(item))
-                         .ReturnsAsync(new WebForms { Value = null });
+                           .ReturnsAsync(new WebForms { Value = null });
 
             // Act
             var result = await _handler.HandleAsync(item);

@@ -5,21 +5,25 @@ using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
+using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
+using Content.Modelling.Constants;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
     public class WebFormsHandler : IContentHandler
     {
+        private readonly ViewComponentRenderer _renderer;
         private readonly ISerializationHelper _serializer;
         private readonly IFormHelper _formHelper;
 
-        public WebFormsHandler(ISerializationHelper serializer, IFormHelper formHelper)
+        public WebFormsHandler(ViewComponentRenderer renderer,ISerializationHelper serializer, IFormHelper formHelper)
         {
+            _renderer = renderer;
             _serializer = serializer;
             _formHelper = formHelper;
         }
 
-        string IContentHandler.ContentType => throw new NotImplementedException();
+        public string ContentType => typeof(WebForms).Name;
 
         public bool CanHandle(string className) => className == typeof(WebForms).Name;
 
@@ -35,8 +39,9 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                 if (form?.Value?.ContentType?.Id != null)
                 {
                     // Generate the form HTML
-                    var formHtml = _formHelper.TagBuilder("lgwebsite", form.Value.ContentType.Id);
-                    htmlContent.AppendHtml(formHtml);
+                    var formHtml = _formHelper.TagBuilder($@"lgwebsite", form.Value.ContentType.Id);
+                    string temp = await _renderer.RenderAsync(ContentType, form);
+                    htmlContent.AppendHtml(temp);
                 }
             }
             catch (Exception ex)

@@ -63,6 +63,4 @@ namespace RazorPageCampaignsWebsite.Components
             return View(viewModel);
         }
     }
-
-  
 }

@@ -1,4 +1,5 @@
-﻿using Content.Modelling.Models.Components;
+﻿using Content.Modelling.Constants;
+using Content.Modelling.Models.Components;
 using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
@@ -18,7 +19,7 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
             _serializer = serializer;
         }
 
-        public string ContentType => "ImageGalleryNew";
+        public string ContentType => ComponentKeys.IMAGE_GALLERY_NEW;
 
         public bool CanHandle(string className) => className == typeof(MultipleImages).Name;
 

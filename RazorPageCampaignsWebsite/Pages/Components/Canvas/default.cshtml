@@ -23,10 +23,8 @@
                     <br/>
                 }
                 var handler = HandlerFactory.GetHandler(item.ClassName);
-                if (counter < 20)
-                {
-                    @await handler.HandleAsync(item)
-                }
+                @await handler.HandleAsync(item)
+                
         
             counter++;
         }

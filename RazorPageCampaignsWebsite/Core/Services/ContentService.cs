@@ -2,6 +2,7 @@
 using Content.Modelling.Models.Templates;
 using Content.Modelling.Models.Interfaces;
 using RazorPageCampaignsWebsite.Core.Interfaces;
+using Content.Modelling.Models.Templates.Base;
 
 namespace RazorPageCampaignsWebsite.Core.Services
 {
@@ -19,7 +20,7 @@ namespace RazorPageCampaignsWebsite.Core.Services
 
         public List<IPageTemplates> GetChildPages(string parentUri)
         {
-            return _repository.GetChildEntries<BGStandard>(parentUri)
+            return _repository.GetChildEntries<BaseBG>(parentUri)
                        .Cast<IPageTemplates>()
                        .ToList();
         }

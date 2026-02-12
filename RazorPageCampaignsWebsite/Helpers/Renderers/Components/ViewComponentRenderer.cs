@@ -29,7 +29,7 @@ namespace RazorPageCampaignsWebsite.Helpers.Renderers.Components
             var actionContext = new ActionContext(httpContext, httpContext.GetRouteData(), new ActionDescriptor());
 
             // Look for the ViewComponent view
-            var viewPath = $"~/Pages/Shared/Components/{viewComponentName}/Default.cshtml";
+            var viewPath = $"~/Pages/Components/{viewComponentName}/Default.cshtml";
             var viewResult = _razorViewEngine.GetView(executingFilePath: null, viewPath: viewPath, isMainPage: false);
 
             if (!viewResult.Success)

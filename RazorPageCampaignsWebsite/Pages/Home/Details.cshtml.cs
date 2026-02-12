@@ -1,5 +1,3 @@
-
-
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPageCampaignsWebsite.Helpers;
 using RazorPageCampaignsWebsite.Core.Models;
@@ -7,14 +5,15 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 using Content.Modelling.Models.Templates;
+using Content.Modelling.Models.Templates.Base;
 
 namespace RazorPageCampaignsWebsite.Pages.Home
 {
-    public class DetailsModel : BasePageModel<BGStandard>
+    public class DetailsModel : BasePageModel<dynamic>
     {
 
-        public DetailsModel(ILogger<BasePageModel<BGStandard>> logger,
-                            IDataService<BGStandard> dataService,
+        public DetailsModel(ILogger<BasePageModel<dynamic>> logger,
+                            IDataService<dynamic> dataService,
                             IContentRepository contentRepository, BreadcrumbService breadcrumb) : base(logger, dataService, contentRepository, breadcrumb) { }
 
         public override async Task OnGetAsync()
@@ -33,11 +32,20 @@ namespace RazorPageCampaignsWebsite.Pages.Home
                 await base.OnGetAsync();
             }
             Items = Items.Take(1).ToList();
-          
+            PopulateConcreteModel(Items);
+
+
             LogAction("Getting Campaign details specific data loaded");
         }
 
+        protected override void OnModelPopulated()
+        {
 
-
+            // This runs after the concrete model is populated
+            if (ViewModel.ConcreteModel is BGStandardWithForms formsModel)
+            {
+                // Do something specific to forms pages
+            }
+        }
     }
 }

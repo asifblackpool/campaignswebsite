@@ -68,6 +68,8 @@ builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWith
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
+
+
 //Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
 

@@ -1,40 +1,17 @@
-﻿
-@page
-@using Content.Modelling.Helpers
-@using Content.Modelling.Models.Canvas.Helpers;
-@using Content.Modelling.Models.Canvas.Code
-@using Content.Modelling.Models.Canvas.Headers
-@using Content.Modelling.Models.Canvas.Lists
-@using Content.Modelling.Models.Canvas.Paragraphs
-@using Content.Modelling.Models.Canvas.Images
-@using Newtonsoft.Json;
-@using RazorPageCampaignsWebsite.Helpers;
-@using Content.Modelling.Models.Templates
-@using Content.Modelling.Models.GenericTypes;
-@using System.Text
-
-
+﻿@page
 @model RazorPageCampaignsWebsite.Pages.Home.DetailsModel
-@{
-    BGStandard? entryModel = (Model != null && Model.Items.Count == 1) ? Model.Items.FirstOrDefault() : null;
+
+@* Use the ViewModel property - already populated by the base class! *@
+
+
+@* Optional: Display type information *@
+@if (!string.IsNullOrEmpty(Model.ViewModel.ModelType))
+{
+    <p class="text-muted">Content Type: @Model.ViewModel.ModelType</p>
 }
 
-@if (entryModel != null)
-{
-    @try
-    {
+<bg-model model="@Model.ViewModel" />
 
-        @await Component.InvokeAsync("Canvas", entryModel.GetSerialisedCanvas())
-    }
-    catch (Exception ex)
-    {
-        <div class="alert alert-danger">@ex.Message</div>
-    }
-}
-else
-{
-    <h1>Root details pages not found </h1>
-}
 <style type="text/css">
     main {
         max-width: 1068px !important;
