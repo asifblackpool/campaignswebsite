@@ -8,9 +8,9 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 using Content.Modelling.Constants;
 using Content.Modelling.Models.Templates.Base;
 using Content.Modelling.Models.GenericTypes;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using RazorPageCampaignsWebsite.ViewModels;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace RazorPageCampaignsWebsite.Core.Models
 {
@@ -112,32 +112,17 @@ namespace RazorPageCampaignsWebsite.Core.Models
                             
                         var concreteModel = BGTypeResolver.DeserializeToConcreteType(contentTypeId, content);
 
-                            switch (concreteModel)
-                            {
-                                case BGStandard standard:
-                                    ViewData["Model"] = concreteModel as BGStandard;
-                                    ViewModel.ConcreteModel = concreteModel as BGStandard;
-                                    break;
-                                case BGStandardWithImages images:
-                                    ViewData["Model"] = concreteModel as BGStandardWithImages;
-                                    ViewModel.ConcreteModel = concreteModel as BGStandardWithImages;
-                                    break;
-                                case BGStandardWithForms forms:
-                                    ViewData["Model"] = concreteModel as BGStandardWithForms;
-                                    ViewModel.ConcreteModel = concreteModel as BGStandardWithForms;
-                                    break;
-                                case null:
-                                    concreteModel = baseIem;
-                                    break;
-                            }
 
-                            ViewData["ModelType"] = concreteModel?.GetType().Name;
-                            ViewData["ContentTypeId"] = contentTypeId;
+                        // The concreteModel is already the correct type!
+                        ViewModel.ConcreteModel = concreteModel as BaseBG;
+                        ViewModel.ContentTypeId = contentTypeId;
+                        ViewModel.ModelType = concreteModel?.GetType().Name;
+                        ViewModel.OriginalItems = Items as List<dynamic>;
 
-
-                            ViewModel.ContentTypeId = contentTypeId;
-                            ViewModel.ModelType = concreteModel?.GetType().Name;
-                            ViewModel.OriginalItems = Items as List<dynamic>;
+                        // Keep ViewData in sync for backward compatibility
+                        ViewData["Model"] = ViewModel.ConcreteModel;
+                        ViewData["ModelType"] = ViewModel.ModelType;
+                        ViewData["ContentTypeId"] = ViewModel.ContentTypeId;
                         }
                     }    
                 }
@@ -193,75 +178,47 @@ namespace RazorPageCampaignsWebsite.Core.Models
 
     }
 
-
     #region BT Type Resolver 
 
-    public static class BGTypeResolver
-    {
-        private static readonly Dictionary<string, Type> _typeMap = new()
+        public static class BGTypeResolver
         {
-            { ContensisClientKeys.BG_STANDARD, typeof(BGStandard) },
-            { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
-            { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
-            { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
-        };
-
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        public static Type GetConcreteType(string contentTypeId)
-        {
-            return _typeMap.TryGetValue(contentTypeId, out var type) ? type : typeof(BaseBG);
-        }
-
-        public static object? DeserializeToConcreteType(string contentTypeId, string json)
-        {
-            if (string.IsNullOrEmpty(json)) return null;
-
-            var concreteType = GetConcreteType(contentTypeId);
-
-            try
+            private static readonly Dictionary<string, Type> _typeMap = new()
             {
-                return JsonSerializer.Deserialize(json, concreteType, _jsonOptions);
-            }
-            catch (JsonException ex)
-            {
-                // Log exception if needed
-                Console.WriteLine($"Failed to deserialize JSON to {concreteType.Name}: {ex.Message}");
-                return null;
-            }
-        }
+                { ContensisClientKeys.BG_STANDARD, typeof(BGStandard) },
+                { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
+                { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
+                { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
+            };
 
-        public static T? DeserializeToConcreteType<T>(string contentTypeId, string json) where T : BaseBG
-        {
-            var expectedType = GetConcreteType(contentTypeId);
-
-            if (typeof(T) != expectedType)
+            private static readonly JsonSerializerSettings _jsonSettings = new()
             {
-                throw new ArgumentException($"Type mismatch: Expected {expectedType.Name} but requested {typeof(T).Name}");
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            public static Type GetConcreteType(string contentTypeId)
+            {
+                return _typeMap.TryGetValue(contentTypeId, out var type) ? type : typeof(BaseBG);
             }
 
-            return DeserializeToConcreteType(contentTypeId, json) as T;
-        }
+            public static object? DeserializeToConcreteType(string contentTypeId, string json)
+            {
+                if (string.IsNullOrEmpty(json)) return null;
 
-        /// <summary>
-        /// Legacy method for backward compatibility
-        /// </summary>
-        public static object? CastToConcreteType(BaseBG item)
-        {
-            if (item == null) return null;
+                var concreteType = GetConcreteType(contentTypeId);
 
-            // Instead of Convert.ChangeType, we serialize and deserialize
-            var json = JsonSerializer.Serialize(item, _jsonOptions);
-            return DeserializeToConcreteType(item.Sys.ContentTypeId, json);
+                try
+                {
+                    return JsonConvert.DeserializeObject(json, concreteType, _jsonSettings);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to deserialize JSON to {concreteType.Name}: {ex.Message}");
+                    return null;
+                }
+            }
         }
-    }
 
     #endregion
-
 
 }

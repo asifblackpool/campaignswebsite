@@ -39,28 +39,48 @@ namespace RazorPageCampaignsWebsite.Components
                 model = ViewContext.ViewData.Model as BaseBG;
             }
 
-            if (model == null || !(model is BGStandard bgStandard))
+            if (model == null || !(model is BGStandard bgStandard || model is BGStandardWithDocuments BGStandardWithDocs))
                 return Content(string.Empty);
 
 
-
-            // Cast to BGStandard to access the properties
-            var temp = model as BGStandard;
-
-            if (temp == null)
-                return Content(string.Empty); // Return empty if not the right type
-
-            // Create view model with only the data needed for the sidebar
-            var viewModel = new AdditionalInformationViewModel
+            if (model is BGStandardWithDocuments)
             {
-              
-                Assets = temp.Assets ?? new List<Asset>(),
-                DataNavigationLinks = temp.GetDataNavigationLinks ?? new List<DataNavigationLink>(),
-                LinkedEntries = temp.GetReferencedEntries(_contensisClient,1, null)
-              
-            };
+                var temp = model as BGStandardWithDocuments;
 
-            return View(viewModel);
+                if (temp == null)
+                    return Content(string.Empty); // Return empty if not the right type
+
+                // Create view model with only the data needed for the sidebar
+                var viewModel = new AdditionalInformationViewModel
+                {
+                    LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
+                };
+
+                return View(viewModel);
+            }
+
+            if (model is BGStandard)
+            {
+                var temp = model as BGStandard;
+
+                if (temp == null)
+                    return Content(string.Empty); // Return empty if not the right type
+
+                // Create view model with only the data needed for the sidebar
+                var viewModel = new AdditionalInformationViewModel
+                {
+
+                    Assets = temp.Assets ?? new List<Asset>(),
+                    DataNavigationLinks = temp.GetDataNavigationLinks ?? new List<DataNavigationLink>(),
+                    LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
+
+                };
+
+                return View(viewModel);
+            }
+            // Cast to BGStandard to access the properties
+            return Content(string.Empty);
+          
         }
     }
 }

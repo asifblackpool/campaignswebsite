@@ -48,6 +48,7 @@ namespace RazorPageCampaignsWebsite.TagHelpers
                 if (Model.ConcreteModel is IHasSerialisedCanvas hasCanvas)
                 {
                     var canvasData = hasCanvas.GetSerialisedCanvas();
+                    
                     if (canvasData != null)
                     {
                         var canvasContent = await _viewComponentHelper.InvokeAsync("Canvas",canvasData);
@@ -75,7 +76,12 @@ namespace RazorPageCampaignsWebsite.TagHelpers
                 {
                     output.PostElement.AppendHtml($@"{_canvasHtml}");
                 }
-                
+
+                if (Model.ConcreteModel is BGStandardWithDocuments documents)
+                {
+                    output.PostElement.AppendHtml($@"{_canvasHtml}");
+                }
+
                 if (Model.ConcreteModel is BGStandardWithForms forms)
                 {
                     output.PostElement.AppendHtml($@"{_canvasHtml}");

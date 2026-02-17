@@ -37,6 +37,9 @@ namespace RazorPageCampaignsWebsite.Services
                     var entry = client.Entries.Get<T>((Guid)entryId, null, 1);
                     
                     
+                    
+                    
+                    
                     _data.Add(entry);
                 }
               
