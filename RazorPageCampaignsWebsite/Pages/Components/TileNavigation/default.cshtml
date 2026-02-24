@@ -1,0 +1,37 @@
+﻿@using Content.Modelling.Models.Templates
+@using RazorPageCampaignsWebsite.ViewModels
+@model List<TileNavigationViewModel>
+
+@{
+    // Retrieve layout from ViewData; default to 3 tiles if not present
+    var layout = ViewData["Layout"] as TileLayout? ?? TileLayout.ThreeTilesInARow;
+    string columnClass = layout switch
+    {
+        TileLayout.ThreeTilesInARow => "col-md-4 col-sm-6", // 3 per row on medium, 2 on small
+        TileLayout.FourTilesInARow => "col-md-3 col-sm-6", // 4 per row on medium, 2 on small
+        _ => "col-md-4 col-sm-6" // fallback
+    };
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="tile-board row g-4">
+        @foreach (var tile in Model)
+        {
+            <div class="@columnClass">
+                <div class="card h-100 tile-card">
+                    <div class="card-body">
+                        <h5 class="card-title">@tile.LinkText</h5>
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <a href="@tile.Url" class="stretched-link">Learn more</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">No tiles available.</p>
+}

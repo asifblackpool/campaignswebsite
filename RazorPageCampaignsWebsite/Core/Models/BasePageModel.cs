@@ -188,6 +188,7 @@ namespace RazorPageCampaignsWebsite.Core.Models
                 { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
                 { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
                 { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
+                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLandingTile) },
             };
 
             private static readonly JsonSerializerSettings _jsonSettings = new()

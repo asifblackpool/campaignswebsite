@@ -1,0 +1,38 @@
+﻿.tile-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.tile-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-color: #0d6efd;
+}
+
+.tile-card .card-body {
+    padding: 1.5rem;
+}
+
+.tile-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #212529;
+}
+
+.tile-card .card-footer {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.tile-card .card-footer a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+    }
+
+.tile-card .card-footer a:hover {
+    text-decoration: underline;
+}
