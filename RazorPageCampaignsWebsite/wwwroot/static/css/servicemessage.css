@@ -11,13 +11,13 @@
 .message-header {
     padding: 16px 20px;
     /* Use the Color property value here */
-    background-color: var(--message-color, #007bff);
+    background-color: var(--message-color, #e20032 );
     color: white;
 }
 
 .message-title {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 2.25rem;
     font-weight: 600;
 }
 

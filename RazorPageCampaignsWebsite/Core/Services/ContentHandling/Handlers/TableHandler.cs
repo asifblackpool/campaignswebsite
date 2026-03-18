@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
+using System.Net;
 
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
@@ -46,7 +47,12 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
                 {
                     // Build and append the table HTML
                     var tableHtml = _tableHelper.BuildHtmlTable(table);
-                    htmlContent.AppendHtml(tableHtml);
+                    if (tableHtml != null)
+                    {
+                        string? temp = tableHtml.ToString(); // still nullable
+                        string decodedHtml = WebUtility.HtmlDecode(temp ?? string.Empty);
+                        htmlContent.AppendHtml(decodedHtml);
+                    }
                 }
             }
             catch (Exception ex)

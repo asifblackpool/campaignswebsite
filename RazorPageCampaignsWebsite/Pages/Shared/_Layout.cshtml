@@ -32,6 +32,12 @@
     <link rel="stylesheet" href="~/static/css/image-gallery.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/image-text-component.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/tile-navigation.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/block-quote.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/lead-paragraph.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/data-table.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/ul-lists.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/headings.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/call-to-action-buttons.css" asp-append-version="true" />
 
     <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
 
@@ -114,8 +120,7 @@
                             class="col-xs-12 col-sm-12 col-md-12 col-md-2 col-md-pull-10 clearfix zero-pad-all">
                             <!--Additional Information to go here -->
                             @await Component.InvokeAsync("AdditionalInformation")
-                            <!--Auto Navigation services to go here-->
-                            <div id="auto-navigation-content"></div>
+                      
                         </div>
                     </div>
                 </div>
@@ -155,31 +160,19 @@
 
     <!-- Accordion CSS and Scripts -->
 
-    <link rel="stylesheet"
-        href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css"
-        asp-append-version="true" />
-    <link rel="stylesheet"
-        href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion.css"
-        asp-append-version="true" />
-    <link rel="stylesheet"
-        href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion-gallery.css"
-        asp-append-version="true" />
-    <link rel="stylesheet"
-        href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/overrides.css"
-        asp-append-version="true" />
+    <link rel="stylesheet "href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion-gallery.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/overrides.css" asp-append-version="true" />
     <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
     <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/thirdparty/govuk/accordion.js"></script>
-    <script type="text/javascript"
-        src="~/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
-
-
-
-
+    <script type="text/javascript"rc="~/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
             //tableservices.tablename("div.govuk-body table");
             //tableservices.init();
+            tableservices.tablename(".data-table");
 
         });
     </script>

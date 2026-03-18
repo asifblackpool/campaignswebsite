@@ -1,15 +1,22 @@
-﻿* {
+﻿:root {
+    /* Main brand colors */
+    --background-primary-color: #000;
+    --primary-text-color:#fff;
+
+}
+
+
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-
-
 .gallery-container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
+    background: var(--background-primary-color);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -31,13 +38,13 @@
     height: 100%;
     object-fit: contain;
     transition: transform 0.3s ease;
-    background: white;
+    background: var(--background-primary-color);
     cursor: pointer;
 }
 
-    .main-image:hover {
-        transform: scale(1.02);
-    }
+.main-image:hover {
+    transform: scale(1.02);
+}
 
 .image-info {
     position: absolute;
@@ -59,6 +66,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 8px;
+    color:var(--primary-text-color);
 }
 
 .image-caption {
@@ -81,24 +89,24 @@
     scrollbar-color: #4a6ee0 #f0f0f0;
 }
 
-    .thumbnails-container::-webkit-scrollbar {
-        height: 8px;
-    }
+.thumbnails-container::-webkit-scrollbar {
+    height: 8px;
+}
 
-    .thumbnails-container::-webkit-scrollbar-track {
-        background: #f0f0f0;
-        border-radius: 10px;
-    }
+.thumbnails-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
 
-    .thumbnails-container::-webkit-scrollbar-thumb {
-        background: #4a6ee0;
-        border-radius: 10px;
-    }
+.thumbnails-container::-webkit-scrollbar-thumb {
+    background: #4a6ee0;
+    border-radius: 10px;
+}
 
 .thumbnail {
     min-width: 120px;
     height: 80px;
-    border-radius: 10px;
+    border-radius: 0px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;

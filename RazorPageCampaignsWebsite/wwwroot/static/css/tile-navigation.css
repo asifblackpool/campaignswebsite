@@ -1,38 +1,57 @@
-﻿.tile-card {
-    border: 1px solid #dee2e6;
-    border-radius: 0.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+﻿:root {
+    --primary-purple-color: #830065;
+}
+
+.tile-card {
+    border: 2px solid purple;
+    border-radius: 25px;
+    min-height: 210px;
+    margin-bottom: 30px;
     background-color: #fff;
-    overflow: hidden;
+    transition: background-color 0.2s ease;
+    position: relative; /* required for stretched-link to anchor to */
 }
 
-.tile-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    border-color: #0d6efd;
-}
-
-.tile-card .card-body {
-    padding: 1.5rem;
-}
-
-.tile-card .card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #212529;
-}
-
-.tile-card .card-footer {
-    padding: 0 1.5rem 1.5rem 1.5rem;
-}
-
-.tile-card .card-footer a {
-    color: #0d6efd;
-    text-decoration: none;
-    font-weight: 500;
+    /* The card-body only provides spacing; its contents are handled by the link */
+    .tile-card .card-body {
+        padding: 0;
+        height: 100%; /* ensures it fills the card */
     }
 
-.tile-card .card-footer a:hover {
-    text-decoration: underline;
-}
+        /* The stretched link covers the whole card and becomes a flex container */
+    .tile-card .card-body a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* keeps content at top, then push with ::before */
+        color: var(--primary-purple-color);
+        text-decoration: none !important;
+        position: relative;
+        z-index: 99999;
+        height:200px;
+    }
+
+    .tile-card .card-body a:hover {
+        color:white !important;
+    }
+
+    .tile-card .card-body a::before {
+        content: '';
+        height: 30%; /* 30% of the link’s height */
+    }
+
+
+    .tile-card:hover {
+        background-color: var(--primary-purple-color);
+        color:blue !important;
+    }
+
+    /* Force the link text to white when the card is hovered */
+    .card-body a:hover {
+        color: #fff !important;
+    }
+
+    /* Optional smooth transition for the link colour */
+    .tile-card .card-body a {
+        transition: color 0.2s ease;
+    }

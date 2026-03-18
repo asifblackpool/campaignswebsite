@@ -35,15 +35,16 @@
 .warning-content,
 .info-content {
     margin-top: 20px; /* space below icon */
+    border:solid 0px white !important;
 }
 
-    .note-content p,
-    .warning-content p,
-    .info-content p {
-        margin: 0;
-        line-height: 1.6;
-        font-size: 18px;
-    }
+.note-content p,
+.warning-content p,
+.info-content p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 20px;
+}
 
 
 /* ==================================
@@ -51,14 +52,18 @@
    ================================== */
 
 .warning-panel {
-    background-color: #fdecea;
-    border-left: 6px solid #8b0000;
-    color: #5f1a1a;
+    background-color: #e20032;
+    border-left: 6px solid darkred;
+    color: white !important;
 }
 
 .warning-icon {
-    background-color: #8b0000;
-    color: #ffffff;
+    background-color: darkred;
+    color: #ffff;
+}
+
+.warning-panel  p {
+    color: white;
 }
 
 
@@ -67,14 +72,18 @@
    ================================== */
 
 .info-panel {
-    background-color: #e3f2fd;
-    border-left: 6px solid #0d47a1;
-    color: #0d47a1;
+    background-color: #ccd1d4;
+    border-left: 6px solid black;
+    color: #041c2c;
 }
 
 .info-icon {
-    background-color: #0d47a1;
+    background-color: black;
     color: #ffffff;
+}
+
+.info-panel p {
+    color: #041c2c;
 }
 
 
@@ -83,12 +92,16 @@
    ================================== */
 
 .note-panel {
-    background-color: #e8f5e9;
-    border-left: 6px solid #1b5e20;
-    color: #1b5e20;
+    background-color: #809e06;
+    border-left: 6px solid #6b8605;
+    color: #041c2c;
 }
 
 .note-icon {
-    background-color: #1b5e20;
-    color: #ffffff;
+    background-color: #4f6303;
+    color: #fff;
+}
+
+.note-panel p {
+    color: #041c2c;
 }

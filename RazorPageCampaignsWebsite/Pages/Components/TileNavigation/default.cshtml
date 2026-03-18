@@ -21,11 +21,11 @@
             <div class="@columnClass">
                 <div class="card h-100 tile-card">
                     <div class="card-body">
-                        <h5 class="card-title">@tile.LinkText</h5>
+                        <a href="@tile.Url" class="stretched-link text-decoration-none">
+                            @tile.LinkText
+                        </a>
                     </div>
-                    <div class="card-footer bg-transparent border-0">
-                        <a href="@tile.Url" class="stretched-link">Learn more</a>
-                    </div>
+                    <!-- Footer removed entirely -->
                 </div>
             </div>
         }

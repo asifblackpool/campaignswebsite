@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "campaigns/testing/standard-landing-page-with-tile-navigation.aspx",
+      "launchUrl": "campaigns/testing/standard-content-page-test.aspx",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "campaigns/testing/standard-landing-page-with-tile-navigation.aspx",
+      "launchUrl": "campaigns/testing/standard-content-page-test.aspx",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

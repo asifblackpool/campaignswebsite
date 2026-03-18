@@ -37,6 +37,7 @@
         var title = document.createElement('h3');
         title.textContent = 'Contents';
         nav.appendChild(title);
+        nav.className = "nav-contents";
 
         var list = document.createElement('ul');
         list.className = 'no-bullets';

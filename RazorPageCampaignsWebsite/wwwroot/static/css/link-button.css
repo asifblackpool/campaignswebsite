@@ -16,7 +16,7 @@
     /* Curved corners */
     border-radius: 12px;
     /* Border and effects */
-    border: 2px solid #041c2c;
+    border: 0px solid #041c2c;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     /* Smooth transitions */
     transition: all 0.3s ease;
@@ -57,6 +57,10 @@
     flex-wrap: wrap;
     gap: 16px;
     margin: 20px 0;
+}
+
+.button-container > a {
+    text-decoration:none !important;
 }
 
 /* Alternative: If you want buttons in a row without flex container */

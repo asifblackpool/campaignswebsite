@@ -46,11 +46,14 @@
         var title       = document.createElement("h3");
         var ul          = document.createElement("ul");
 
+        alert('class added');
         ul.classList.add("no-bullets");
+        nav.classList.add("contents-nav"); // Add your desired class name
 
 
         title.innerText = "Contents";
         nav.appendChild(title);
+
  
         var counter = 1;
         $("div#mainbar h1, div#mainbar h2, div#mainbar h3, div#mainbar h4 , div#mainbar h5").each(function () {
