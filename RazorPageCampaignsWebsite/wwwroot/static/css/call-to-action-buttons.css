@@ -4,6 +4,7 @@
     --corporate-purple-color: #830065;
     --corporate-dark-blue-color: #041c2c;
     --corporate-grey-color: #e6e6e6;
+    --corporate-yellow-color: #ffd800
 }
 
 a.call-to-action, a.cta-button {
@@ -25,6 +26,10 @@ btn-cta, a.call-to-action, a.cta-button {
     border: 0 solid red;
     margin: 1em 0;
     padding: 9px 12px
+}
+
+a.cta-button {
+    background-color:var(--corporate-yellow-color);
 }
 
 .btn-cta::first-letter, 
