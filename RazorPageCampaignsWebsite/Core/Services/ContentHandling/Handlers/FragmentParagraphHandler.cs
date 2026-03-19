@@ -44,6 +44,8 @@ namespace RazorPageCampaignsWebsite.Models.Services.ContentHandling.Handlers
                 if (fragment != null)
                 {
                     var temp = await _navigationLinkHelper.GetLinkUrlAsync(fragment);
+                    
+
                     if (temp != null) { 
                         linkUrl = temp.Url.SafeString();
                         temp.Url = linkUrl;

@@ -57,7 +57,7 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 
                         default:
                             // For unknown or non-embedable URLs, just display as link
-                            htmlContent.AppendHtml($"<a href=\"{code}\" target=\"_blank\">{code}</a>");
+                            htmlContent.AppendHtml(code);
                             break;
                     }
 

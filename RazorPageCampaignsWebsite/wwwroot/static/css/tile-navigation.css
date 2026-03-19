@@ -16,6 +16,8 @@
     .tile-card .card-body {
         padding: 0;
         height: 100%; /* ensures it fills the card */
+        padding-left:15px;
+        padding-right:15px;
     }
 
         /* The stretched link covers the whole card and becomes a flex container */

@@ -15,7 +15,7 @@
 @if (Model.DataNavigationLinks.Any() || Model.Assets.Any() || Model.LinkedEntries.Any())
 {
     <aside class="additional-information-sidebar">
-        <h3 class="sidebar-title">Additional information</h3>
+        <h4 class="sidebar-title">Additional information</h4>
         
         <!-- Data Navigation Links -->
         @if (Model.DataNavigationLinks.Any())
@@ -51,7 +51,7 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
             <div class="sidebar-section assets-section">
-                <h3 class="section-title">Documents & resources</h3>
+                <h4 class="section-title">Documents & resources</h4>
                 <ul class="assets-list">
                     @foreach (var asset in Model.Assets)
                     {
@@ -89,7 +89,7 @@
         @if (Model.LinkedEntries.Any())
         {
             <div class="sidebar-section entries-section">
-                <h3 class="section-title">Related content</h3>
+                <h4 class="section-title">Related content</h4>
                 <div class="entries-list">
                     @foreach (var entry in Model.LinkedEntries)
                     {

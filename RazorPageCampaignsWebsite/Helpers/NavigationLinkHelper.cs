@@ -4,6 +4,8 @@ using Content.Modelling.Models.Canvas.Common;
 using Content.Modelling.Models.Canvas.Helpers;
 using Content.Modelling.Models.Canvas.Paragraphs;
 using RazorPageCampaignsWebsite.Constants;
+using System.Net;
+using System.Text;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Helpers
@@ -57,9 +59,57 @@ namespace RazorPageCampaignsWebsite.Helpers
 
                 }
 
-
             }
             return fp;
+        }
+
+        public static string ToHtml(FragmentParagraph fp)
+        {
+            if (fp?.Value == null || fp.Value.Count == 0)
+                return string.Empty;
+
+            // Ensure links have correct URLs (especially in development)
+            fp = GetLinkUrl(fp);
+
+            var html = new StringBuilder();
+
+            if (fp.Value != null)
+            {
+                foreach (var fragment in fp.Value)
+                {
+                    // Use dynamic to access properties
+                    dynamic val = fragment;
+                    string rawText = val.Value as string ?? "";
+                    string encodedText = WebUtility.HtmlEncode(rawText);
+
+                    string innerHtml = encodedText;
+
+                    // Check for link in properties
+                    if (val.Properties != null && val.Properties.Link != null)
+                    {
+                        var link = val.Properties.Link;
+                        string url = link.System?.Uri ?? "#";
+                        innerHtml = $"<a href=\"{url}\">{encodedText}</a>";
+                    }
+
+                    // Apply decorators
+                    if (val.Properties != null && val.Properties.Decorators != null)
+                    {
+                        foreach (var decorator in val.Properties.Decorators)
+                        {
+                            if (decorator == "strong")
+                            {
+                                innerHtml = $"<strong>{innerHtml}</strong>";
+                            }
+                            // add others if needed
+                        }
+                    }
+
+                    html.Append(innerHtml);
+                }
+            }
+
+            return html.ToString();
         }
     }
 

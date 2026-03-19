@@ -118,11 +118,15 @@ namespace RazorPageCampaignsWebsite.Core.Models
                         ViewModel.ContentTypeId = contentTypeId;
                         ViewModel.ModelType = concreteModel?.GetType().Name;
                         ViewModel.OriginalItems = Items as List<dynamic>;
+                        if (ViewModel.ConcreteModel != null) {
+                            ViewModel.ModelTitle = ViewModel.ConcreteModel.PageTitle;
+                        }
 
-                        // Keep ViewData in sync for backward compatibility
-                        ViewData["Model"] = ViewModel.ConcreteModel;
+                            // Keep ViewData in sync for backward compatibilty
+                         ViewData["Model"] = ViewModel.ConcreteModel;
                         ViewData["ModelType"] = ViewModel.ModelType;
                         ViewData["ContentTypeId"] = ViewModel.ContentTypeId;
+
                         }
                     }    
                 }
