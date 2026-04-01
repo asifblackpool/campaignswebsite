@@ -68,8 +68,6 @@ builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWith
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
-
-
 //Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
 
@@ -108,18 +106,33 @@ if (!app.Environment.IsDevelopment())
 // app.UseHttpsRedirection(); NO SUPPORT FOR .NET 9,0 
 app.UseStaticFiles();
 
-//add rewrite options 
-// Configure URL rewriting
-var rewriteOptions = new RewriteOptions()
-    // Rewrite root path to your specific page
-    .AddRewrite(@"^$", WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/'), skipRemainingRules: true);
-// Rewrite /venues to the full path
-//.AddRewrite(@"^venues$", WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/'), skipRemainingRules: true);
+// ===== REMOVE the rewrite options and UseRewriter =====
+// var rewriteOptions = new RewriteOptions()
+//     .AddRewrite(@"^$", WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/'), skipRemainingRules: true);
+// app.UseRewriter(rewriteOptions);
+// =====================================================
 
-app.UseRewriter(rewriteOptions);
+// Block everything except static assets and /campaigns
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value ?? "";
+    bool isStaticAsset = path.StartsWith("/css/", StringComparison.OrdinalIgnoreCase)
+                         || path.StartsWith("/js/", StringComparison.OrdinalIgnoreCase)
+                         || path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)
+                         || path.StartsWith("/lib/", StringComparison.OrdinalIgnoreCase);
+
+    if (!isStaticAsset && !path.StartsWith("/campaigns", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.StatusCode = 404;
+        return;
+    }
+    await next();
+});
+
+
 
 app.UseRouting();
-// app.UseHttpLogging(); NO SUPPORT FOR .NET 9,0 
+
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");
 app.MapRazorPages();
