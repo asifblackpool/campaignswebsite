@@ -19,7 +19,7 @@
 
 /* Form Container */
 [data-contensis-form-id] {
-    flex: 1 1 50%;
+    flex: 1 1 100% !important;
     min-width: 320px;
     background: #f8fafc;
     border-radius: 12px;
