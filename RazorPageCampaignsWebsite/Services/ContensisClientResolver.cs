@@ -44,7 +44,7 @@ namespace RazorPageCampaignsWebsite.Services
                 return false;
             }
 
-            var host = request.Host.Host;
+            var host = request.Host.Host.ToString().ToLower().Trim();
             _cachedIsPreview = host.Contains("preview") ||
                                host == "localhost" ||
                                host == "127.0.0.1";

@@ -57,6 +57,11 @@ namespace RazorPageCampaignsWebsite.Services
             }
         }
 
+        public string StatusMessage()
+        {
+            return string.Empty;
+        }
+
         public Task<List<T>> GetAllAsync(string? path)
         {
             CheckData(path);

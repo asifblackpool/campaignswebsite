@@ -9,5 +9,6 @@ namespace RazorPageCampaignsWebsite.ViewModels
         public string? ModelType { get; set; }
         public string?  ModelTitle { get; set; }
         public List<dynamic>? OriginalItems { get; set; }
+        public string? DataMessage { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using RazorPageCampaignsWebsite.Constants;
 using RazorPageCampaignsWebsite.Services.Interfaces;
+using System.Configuration;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Services
@@ -9,6 +10,14 @@ namespace RazorPageCampaignsWebsite.Services
     {
         private readonly IContensisClientResolver _clientResolver;
         private readonly IMemoryCache _cache;
+        private string? _dataMessage;
+
+        public string StatusMessage()
+        {
+            bool isPreview = _clientResolver.IsPreview();
+            string versionStatus = _clientResolver.GetClient().DefaultVersionStatus.ToString();
+            return $"the data returned is for the {(isPreview ? "preview" : "live")} website and the client version being returned is {versionStatus}";
+        }
 
         public ContensisDataService(IContensisClientResolver clientResolver, IMemoryCache cache)
         {
@@ -22,6 +31,10 @@ namespace RazorPageCampaignsWebsite.Services
             var client = _clientResolver.GetClient();
             bool isPreview = _clientResolver.IsPreview();
 
+            string versionStatus = client.DefaultVersionStatus.ToString();
+            string website = isPreview ? "preview" : "live";
+
+          
             string cacheKey = $"{typeof(T).Name}_{effectivePath}_{(isPreview ? "preview" : "live")}";
 
             // Try to get from cache - handle possible null value
@@ -61,6 +74,7 @@ namespace RazorPageCampaignsWebsite.Services
 
             return data;
         }
+
         public Task<T?> GetByIdAsync(int id, string? path)
         {
             var allData = GetAllAsync(path).Result;

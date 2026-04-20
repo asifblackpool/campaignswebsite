@@ -50,6 +50,8 @@ namespace RazorPageCampaignsWebsite.Core.Models
             _dataService = dataService;
             _breadcrumb = breadcrumb;
             _contentRepository = contentRepository;
+
+            
         }
 
         // Shared initialization
@@ -59,8 +61,10 @@ namespace RazorPageCampaignsWebsite.Core.Models
             Items = await _dataService.GetAllAsync();
             Reset();
 
-            ViewData["Title"] = $"{PageType}s - {DateTime.Now.Year}";
-   
+            ViewData["Title"]           = $"{PageType}s - {DateTime.Now.Year}";
+         
+
+
             StoreTitle(Items);
             StoreImageStrip(Items);
         }
@@ -114,18 +118,20 @@ namespace RazorPageCampaignsWebsite.Core.Models
 
 
                         // The concreteModel is already the correct type!
-                        ViewModel.ConcreteModel = concreteModel as BaseBG;
-                        ViewModel.ContentTypeId = contentTypeId;
-                        ViewModel.ModelType = concreteModel?.GetType().Name;
-                        ViewModel.OriginalItems = Items as List<dynamic>;
+                        ViewModel.ConcreteModel         = concreteModel as BaseBG;
+                        ViewModel.ContentTypeId         = contentTypeId;
+                        ViewModel.ModelType             = concreteModel?.GetType().Name;
+                        ViewModel.OriginalItems         = Items as List<dynamic>;
                         if (ViewModel.ConcreteModel != null) {
                             ViewModel.ModelTitle = ViewModel.ConcreteModel.PageTitle;
                         }
 
+                        ViewModel.DataMessage           = _dataService.StatusMessage();
+
                             // Keep ViewData in sync for backward compatibilty
-                         ViewData["Model"] = ViewModel.ConcreteModel;
-                        ViewData["ModelType"] = ViewModel.ModelType;
-                        ViewData["ContentTypeId"] = ViewModel.ContentTypeId;
+                        ViewData["Model"]               = ViewModel.ConcreteModel;
+                        ViewData["ModelType"]           = ViewModel.ModelType;
+                        ViewData["ContentTypeId"]       = ViewModel.ContentTypeId;
 
                         }
                     }    

@@ -175,7 +175,7 @@ public static class ContensisClientFactory
         );
     }
 
-    public  static ContensisClient CreateLiveClient()
+    public static ContensisClient CreateLiveClient()
     {
         EnsureEnvironmentLoaded();
         return ContensisClient.Create(
