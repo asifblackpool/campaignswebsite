@@ -11,12 +11,13 @@ namespace RazorPageCampaignsWebsite.Infrastructure.Repositories
     using System.Linq;
     using Content.Modelling.Models.Interfaces;
     using Content.Modelling.Models.Templates;
+    using RazorPageCampaignsWebsite.Services;
 
     public class ContensisContentRepository : IContentRepository
     {
-        private readonly IContensisClient _client;
+        private readonly IContensisClientResolver _client;
 
-        public ContensisContentRepository(IContensisClient client)
+        public ContensisContentRepository(IContensisClientResolver client)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
@@ -26,7 +27,7 @@ namespace RazorPageCampaignsWebsite.Infrastructure.Repositories
             var results = new List<T>();
 
             // 1. Get the parent node by its URI
-            var parentNode = _client.Nodes.GetByPath(parentUri);
+            var parentNode = _client.GetClient().Nodes.GetByPath(parentUri);
 
             if (parentNode == null)
                 return results;

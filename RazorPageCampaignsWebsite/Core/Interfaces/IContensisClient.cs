@@ -1,4 +1,5 @@
-﻿using Zengenti.Contensis.Delivery;
+﻿using RazorPageCampaignsWebsite.Services;
+using Zengenti.Contensis.Delivery;
 
 
 namespace RazorPageCampaignsWebsite.Core.Interfaces
@@ -13,15 +14,18 @@ namespace RazorPageCampaignsWebsite.Core.Interfaces
 
     public class ContensisClientWrapper : IContensisClient
     {
-        private readonly ContensisClient _inner;
+        private readonly IContensisClientResolver _resolver;
 
-        public ContensisClientWrapper(ContensisClient inner)
+        public ContensisClientWrapper(IContensisClientResolver resolver)
         {
-            _inner = inner;
+            _resolver = resolver;
         }
 
-        public NodeOperations Nodes => _inner.Nodes;
-        public EntryOperations Entries => _inner.Entries;
+        // Get the correct client on each property access
+        private ContensisClient CurrentClient => _resolver.GetClient();
+
+        public NodeOperations Nodes => CurrentClient.Nodes;
+        public EntryOperations Entries => CurrentClient.Entries;
     }
 
 }

@@ -1,4 +1,8 @@
+﻿using DotNetEnv;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Nancy;
 using RazorPageCampaignsWebsite.Constants;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling;
@@ -23,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Load environment variables FIRST
 DotNetEnv.Env.TraversePath().Load();
 
-// Configure ContensisClient BEFORE registering services
+/* Configure ContensisClient BEFORE registering services
 ContensisClient.Configure(
     new ContensisClientConfiguration(
         rootUrl: string.Format("https://api-{0}.cloud.contensis.com", DotNetEnv.Env.GetString("ALIAS")),
@@ -33,21 +37,19 @@ ContensisClient.Configure(
     )
 );
 
-// Get the real client
-var contensisClient = ContensisClient.Create();
+*/
+// Register the resolver(scoped)
+builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
 
-// Register generic data service
-builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
-
-// Register IContensisClient as a singleton
-builder.Services.AddSingleton<IContensisClient>(sp =>
+// Register the concrete ContensisClient so that any class expecting it gets the correct per‑request client
+builder.Services.AddScoped<ContensisClient>(sp =>
 {
-    return new ContensisClientWrapper(contensisClient);
+    var resolver = sp.GetRequiredService<IContensisClientResolver>();
+    return resolver.GetClient();
 });
 
-// Register ContensisClient for ViewComponents and other services that need the concrete type
-builder.Services.AddSingleton(sp => contensisClient);
-
+// Register generic data service (this depends on IContensisClient)
+builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
 //register repositories
 builder.Services.AddTransient<IContentRepository, ContensisContentRepository>();
 
@@ -138,3 +140,58 @@ app.UseStatusCodePagesWithReExecute("/Error");
 app.MapRazorPages();
 
 app.Run();
+
+
+#region static class to create the Contensis Client
+
+public static class ContensisClientFactory
+{
+    private static readonly object _lock = new object();
+    private static bool _envLoaded = false;
+
+    private static void EnsureEnvironmentLoaded()
+    {
+        if (!_envLoaded)
+        {
+            lock (_lock)
+            {
+                if (!_envLoaded)
+                {
+                    Env.TraversePath().Load();
+                    _envLoaded = true;
+                }
+            }
+        }
+    }
+    public static ContensisClient CreatePreviewClient()
+    {
+        EnsureEnvironmentLoaded();
+        return ContensisClient.Create(
+            projectId: Env.GetString("PROJECT_API_ID"),
+            rootUrl: string.Format("https://api-{0}.cloud.contensis.com", Env.GetString("ALIAS")),
+            clientId: Env.GetString("CONTENSIS_CLIENT_ID"),
+            sharedSecret: Env.GetString("CONTENSIS_CLIENT_SECRET"),
+            versionStatus: VersionStatus.Latest
+        );
+    }
+
+    public  static ContensisClient CreateLiveClient()
+    {
+        EnsureEnvironmentLoaded();
+        return ContensisClient.Create(
+            projectId: Env.GetString("PROJECT_API_ID"),
+            rootUrl: string.Format("https://api-{0}.cloud.contensis.com", Env.GetString("ALIAS")),
+            clientId: Env.GetString("CONTENSIS_CLIENT_ID"),
+            sharedSecret: Env.GetString("CONTENSIS_CLIENT_SECRET"),
+            versionStatus: VersionStatus.Published
+        );
+    }
+
+    // Optional helper: returns a client based on a boolean flag
+    public static ContensisClient CreateClient(bool isPreview)
+    {
+        return isPreview ? CreatePreviewClient() : CreateLiveClient();
+    }
+}
+
+#endregion
