@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Http;
+using Nancy;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Services
@@ -8,6 +9,7 @@ namespace RazorPageCampaignsWebsite.Services
     {
         ContensisClient GetClient();
         bool IsPreview();
+        string GetHost();
     }
 
     public class ContensisClientResolver : IContensisClientResolver
@@ -30,6 +32,16 @@ namespace RazorPageCampaignsWebsite.Services
             bool isPreview = IsPreview();
             _cachedClient = ContensisClientFactory.CreateClient(isPreview);
             return _cachedClient;
+        }
+
+        public string GetHost()
+        {
+            var request = _httpContextAccessor.HttpContext?.Request;
+            if (request == null)
+            {
+                return "Host not found";
+            }
+            return request.Host.Host.ToString().ToLower().Trim();
         }
 
         public bool IsPreview()

@@ -8,7 +8,7 @@
 @if (!string.IsNullOrEmpty(Model.ViewModel.ModelType))
 {
     <p class="text-muted" style="display:none;">Content Type: @Model.ViewModel.ModelType</p>
-    <p class="text-muted" style="display:none;">Information: @Model.ViewModel.DataMessage</p>
+      @Html.Raw(string.Format("{0}",@Model.ViewModel.DataMessage))
 }
 
 <bg-model model="@Model.ViewModel" />

@@ -16,7 +16,13 @@ namespace RazorPageCampaignsWebsite.Services
         {
             bool isPreview = _clientResolver.IsPreview();
             string versionStatus = _clientResolver.GetClient().DefaultVersionStatus.ToString();
-            return $"the data returned is for the {(isPreview ? "preview" : "live")} website and the client version being returned is {versionStatus}";
+            string host = _clientResolver.GetHost();
+
+            string temp = $@"Useful Information: The data returned for the {(isPreview ? "preview" : "live")} website <br/>
+                            1. client version being returned is {versionStatus}<br/>
+                            2. host is {host}";
+
+            return string.Format("<p class='text-muted' style='display:{0};'>{1}</p>", isPreview ? "block" : "none", temp);
         }
 
         public ContensisDataService(IContensisClientResolver clientResolver, IMemoryCache cache)
