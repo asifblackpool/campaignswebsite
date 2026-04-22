@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
@@ -27,18 +28,25 @@ var builder = WebApplication.CreateBuilder(args);
 // Load environment variables FIRST
 DotNetEnv.Env.TraversePath().Load();
 
-/* Configure ContensisClient BEFORE registering services
-ContensisClient.Configure(
-    new ContensisClientConfiguration(
-        rootUrl: string.Format("https://api-{0}.cloud.contensis.com", DotNetEnv.Env.GetString("ALIAS")),
-        projectApiId: DotNetEnv.Env.GetString("PROJECT_API_ID"),
-        clientId: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_ID"),
-        sharedSecret: DotNetEnv.Env.GetString("CONTENSIS_CLIENT_SECRET")
-    )
-);
+// Configure Forwarded Headers to trust the proxy
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // Tell ASP.NET Core which headers to forward
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                               ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost;
 
-*/
-// Register the resolver(scoped)
+    // If you know the proxy's IP address(es), add them for security.
+    // For development behind a trusted proxy (e.g., localhost or known network):
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+
+    // ⚠️ Only do this if your proxy is fully trusted and you're not on a public network.
+    // In production, specify the actual proxy IPs or subnets.
+    // For now, this allows any proxy (common in container/cloud environments):
+    options.AllowedHosts.Clear(); // optional
+});
+
 builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
 
 // Register the concrete ContensisClient so that any class expecting it gets the correct per‑request client
@@ -90,12 +98,15 @@ builder.Services
     });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IRequestContext, RequestContext>();
 builder.Services.AddScoped<BreadcrumbService>();
 
 //automatic register all content handlers 
 builder.Services.AddContentHandlers();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -8,19 +8,21 @@ namespace RazorPageCampaignsWebsite.Services
     public interface IContensisClientResolver
     {
         ContensisClient GetClient();
-        bool IsPreview();
-        string GetHost();
+        string showHost();
+        bool isPreview();
+        
+
     }
+
 
     public class ContensisClientResolver : IContensisClientResolver
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private ContensisClient? _cachedClient;
-        private bool? _cachedIsPreview;
+        private readonly IRequestContext _requestContext;
 
-        public ContensisClientResolver(IHttpContextAccessor httpContextAccessor)
+        public ContensisClientResolver(IRequestContext rc)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _requestContext = rc;
         }
 
         public ContensisClient GetClient()
@@ -29,38 +31,15 @@ namespace RazorPageCampaignsWebsite.Services
             if (_cachedClient != null)
                 return _cachedClient;
 
-            bool isPreview = IsPreview();
+            bool isPreview = _requestContext.IsPreview;
             _cachedClient = ContensisClientFactory.CreateClient(isPreview);
             return _cachedClient;
         }
 
-        public string GetHost()
-        {
-            var request = _httpContextAccessor.HttpContext?.Request;
-            if (request == null)
-            {
-                return "Host not found";
-            }
-            return request.Host.Host.ToString().ToLower().Trim();
-        }
+        public string showHost() { return _requestContext.Host.ToString().ToLower();  } 
+        public bool isPreview() { return _requestContext.IsPreview; }
 
-        public bool IsPreview()
-        {
-            if (_cachedIsPreview.HasValue)
-                return _cachedIsPreview.Value;
 
-            var request = _httpContextAccessor.HttpContext?.Request;
-            if (request == null)
-            {
-                _cachedIsPreview = false;
-                return false;
-            }
 
-            var host = request.Host.Host.ToString().ToLower().Trim();
-            _cachedIsPreview = host.Contains("preview") ||
-                               host == "localhost" ||
-                               host == "127.0.0.1";
-            return _cachedIsPreview.Value;
-        }
     }
 }
