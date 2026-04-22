@@ -33,10 +33,13 @@ namespace RazorPageCampaignsWebsite.Services
                 return _cachedClient;
 
             bool isPreview = _requestContext.IsPreview;
-            _cachedClient = ContensisClientFactory.CreateClient(isPreview);
+            string versionStatus = showVersionStatus;
+            _cachedClient = ContensisClientFactory.CreateClient(isPreview, showVersionStatus);
             return _cachedClient;
         }
-
+        /// <summary>
+        ///  if version status is latest
+        /// </summary>
         public string showVersionStatus
         {   get
             {

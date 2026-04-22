@@ -199,9 +199,21 @@ public static class ContensisClientFactory
     }
 
     // Optional helper: returns a client based on a boolean flag
-    public static ContensisClient CreateClient(bool isPreview)
+    public static ContensisClient CreateClient(bool isPreview, string versionStatus)
     {
-        return isPreview ? CreatePreviewClient() : CreateLiveClient();
+        if (isPreview)
+        {
+            return CreatePreviewClient();
+        }
+
+        // isPreview == false: only use preview client if versionStatus is "latest" (case‑insensitive, non‑null)
+        if (versionStatus != null &&
+            string.Equals(versionStatus, "latest", StringComparison.OrdinalIgnoreCase))
+        {
+            return CreatePreviewClient();
+        }
+
+        return CreateLiveClient();
     }
 }
 
