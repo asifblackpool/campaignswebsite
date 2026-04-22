@@ -14,13 +14,15 @@ namespace RazorPageCampaignsWebsite.Services
 
         public string StatusMessage()
         {
-            bool isPreview = _clientResolver.isPreview();
+            bool isPreview = _clientResolver.isPreview;
             string versionStatus = _clientResolver.GetClient().DefaultVersionStatus.ToString();
-            string host = _clientResolver.showHost();
+            string host = _clientResolver.showHost;
+            string vs = _clientResolver.showVersionStatus;
 
             string temp = $@"Useful Information: The data returned for the {(isPreview ? "preview" : "live")} website <br/>
                             1. client version being returned is {versionStatus}<br/>
-                            2. host is {host}";
+                            2. host is {host} <br/>
+                            3. Version Status is {vs}";
 
             return string.Format("<p class='text-muted' style='display:{0};'>{1}</p>", isPreview ? "block" : "none", temp);
         }
@@ -35,7 +37,7 @@ namespace RazorPageCampaignsWebsite.Services
         {
             string effectivePath = string.IsNullOrEmpty(path) ? WebsiteConstants.SITE_VIEW_PATH : path;
             var client = _clientResolver.GetClient();
-            bool isPreview = _clientResolver.isPreview();
+            bool isPreview = _clientResolver.isPreview;
 
             string versionStatus = client.DefaultVersionStatus.ToString();
             string website = isPreview ? "preview" : "live";

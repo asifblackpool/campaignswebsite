@@ -5,6 +5,7 @@
     {
         bool IsPreview { get; }
         string Host { get; }
+        IHeaderDictionary Headers { get; }
     }
 
 
@@ -12,7 +13,7 @@
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private bool? _cachedIsPreview;
-        private string _cachedHost;
+        private string? _cachedHost;
 
         public RequestContext(IHttpContextAccessor httpContextAccessor)
         {
@@ -30,6 +31,15 @@
                 _cachedHost = request?.Host.Host.ToLower().Trim() ?? string.Empty;
 
                 return _cachedHost;
+            }
+        }
+
+        public IHeaderDictionary? Headers
+        {
+            get
+            {
+             
+                return _httpContextAccessor.HttpContext?.Request.Headers;
             }
         }
 

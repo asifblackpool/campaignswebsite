@@ -8,8 +8,9 @@ namespace RazorPageCampaignsWebsite.Services
     public interface IContensisClientResolver
     {
         ContensisClient GetClient();
-        string showHost();
-        bool isPreview();
+        string showHost { get; }
+        bool isPreview { get; }
+        string showVersionStatus { get; }
         
 
     }
@@ -36,8 +37,18 @@ namespace RazorPageCampaignsWebsite.Services
             return _cachedClient;
         }
 
-        public string showHost() { return _requestContext.Host.ToString().ToLower();  } 
-        public bool isPreview() { return _requestContext.IsPreview; }
+        public string showVersionStatus
+        {   get
+            {
+                string entryVersionStatus = _requestContext.Headers.TryGetValue("x-entry-versionstatus", out var values) 
+                    ? values.FirstOrDefault() ?? "found" : "not found";
+                return entryVersionStatus;
+            }
+        }
+           
+        public string showHost { get { return _requestContext.Host.ToString().ToLower(); } }
+        public bool isPreview { get { return _requestContext.IsPreview; } }
+        
 
 
 
