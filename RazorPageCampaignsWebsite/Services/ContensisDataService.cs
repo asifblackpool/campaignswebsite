@@ -19,7 +19,7 @@ namespace RazorPageCampaignsWebsite.Services
             string host = _clientResolver.showHost;
             string vs = _clientResolver.showVersionStatus;
 
-            string temp = $@"Useful Information: The data returned for the {(isPreview ? "preview" : "live")} website <br/>
+            string temp = $@"Useful Information: The data returned for the website, using {vs} client data<br/>
                             1. client version being returned is {versionStatus}<br/>
                             2. host is {host} <br/>
                             3. Version Status is {vs}";
@@ -40,7 +40,7 @@ namespace RazorPageCampaignsWebsite.Services
             bool isPreview = _clientResolver.isPreview;
 
             string versionStatus = client.DefaultVersionStatus.ToString();
-            string website = isPreview ? "preview" : "live";
+            string website = versionStatus == "latest" ? "preview" : "live";
 
           
             string cacheKey = $"{typeof(T).Name}_{effectivePath}_{(isPreview ? "preview" : "live")}";
@@ -48,7 +48,7 @@ namespace RazorPageCampaignsWebsite.Services
             // Try to get from cache - handle possible null value
             if (_cache.TryGetValue(cacheKey, out List<T>? cachedData) && cachedData != null)
             {
-                return Task.FromResult(cachedData);
+               // return Task.FromResult(cachedData);
             }
 
             // Not in cache – load data

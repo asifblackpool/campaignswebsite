@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "campaigns/blackpool-together/community-groups-and-organisations-support-and-programmes",
+      "launchUrl": "campaigns/testing/standard-with-images-page-test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "campaigns/blackpool-together/community-groups-and-organisations-support-and-programmes",
+      "launchUrl": "campaigns/testing/standard-with-images-page-test",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

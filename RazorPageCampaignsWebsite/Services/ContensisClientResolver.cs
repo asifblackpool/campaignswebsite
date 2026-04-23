@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 using Nancy;
+using System.Net.Http;
+using Zengenti;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Services
@@ -29,12 +31,24 @@ namespace RazorPageCampaignsWebsite.Services
         public ContensisClient GetClient()
         {
             // Cache per request (since resolver is scoped)
-            if (_cachedClient != null)
-                return _cachedClient;
+            //if (_cachedClient != null)
+            //    return _cachedClient;
 
-            bool isPreview = _requestContext.IsPreview;
+            bool isPreview = showVersionStatus == "latest" ? true : false;
             string versionStatus = showVersionStatus;
-            _cachedClient = ContensisClientFactory.CreateClient(isPreview, showVersionStatus);
+
+            string? temp = _requestContext.GetQueryStringVersionStatus();
+
+            if (temp != null)
+            {
+                _cachedClient = ContensisClientFactory.CreateClient(isPreview, temp);
+            }
+            else 
+            {
+              _cachedClient = ContensisClientFactory.CreateClient(isPreview, showVersionStatus);
+
+            }
+          
             return _cachedClient;
         }
         /// <summary>

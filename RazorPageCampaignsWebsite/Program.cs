@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
@@ -199,21 +200,31 @@ public static class ContensisClientFactory
     }
 
     // Optional helper: returns a client based on a boolean flag
-    public static ContensisClient CreateClient(bool isPreview, string versionStatus)
+    public static ContensisClient CreateClient(bool isPreview, string QueryStringversionStatus)
     {
-        if (isPreview)
+
+ 
+        // Decide which client to instantiate
+        if (QueryStringversionStatus == "latest")
         {
             return CreatePreviewClient();
         }
-
-        // isPreview == false: only use preview client if versionStatus is "latest" (case‑insensitive, non‑null)
-        if (versionStatus != null &&
-            string.Equals(versionStatus, "latest", StringComparison.OrdinalIgnoreCase))
+        else if (QueryStringversionStatus == "published")
         {
-            return CreatePreviewClient();
+            return CreateLiveClient();
         }
-
-        return CreateLiveClient();
+        else
+        {
+            if (isPreview)
+            {
+                return CreatePreviewClient();
+            }
+            else
+            {
+                return CreateLiveClient();
+            }
+        }
+      
     }
 }
 

@@ -1,4 +1,7 @@
-﻿namespace RazorPageCampaignsWebsite.Services
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
+
+namespace RazorPageCampaignsWebsite.Services
 {
 
     public interface IRequestContext
@@ -6,6 +9,7 @@
         bool IsPreview { get; }
         string Host { get; }
         IHeaderDictionary Headers { get; }
+        QueryString? QueryString { get; }
     }
 
 
@@ -43,6 +47,12 @@
             }
         }
 
+      
+        public QueryString? QueryString
+        {
+            get { return _httpContextAccessor?.HttpContext?.Request.QueryString; }
+        }
+
         public bool IsPreview
         {
             get
@@ -59,5 +69,33 @@
                 return _cachedIsPreview.Value;
             }
         }
+
+     
     }
+
+
+    #region RequestContextExtensions
+
+    public static class RequestContextExtensions
+    {
+        public static string? GetQueryStringVersionStatus(this IRequestContext requestContext)
+        {
+            if (requestContext.QueryString == null)
+                return null;
+
+            // Parse the query string into a dictionary of StringValues
+            var queryParams = QueryHelpers.ParseQuery(requestContext.QueryString.Value.ToString());
+
+            // Try to get the "versionstatus" parameter (case-insensitive)
+            if (queryParams.TryGetValue("versionstatus", out StringValues values))
+            {
+                return values.ToString().ToLowerInvariant();
+            }
+
+            return null;
+        }
+    }
+
+
+    #endregion
 }
