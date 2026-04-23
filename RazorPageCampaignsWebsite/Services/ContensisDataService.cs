@@ -40,15 +40,14 @@ namespace RazorPageCampaignsWebsite.Services
             bool isPreview = _clientResolver.isPreview;
 
             string versionStatus = client.DefaultVersionStatus.ToString();
-            string website = versionStatus == "latest" ? "preview" : "live";
-
+            string website = versionStatus == "latest" ? "latest" : "published";
           
-            string cacheKey = $"{typeof(T).Name}_{effectivePath}_{(isPreview ? "preview" : "live")}";
+            string cacheKey = $"{typeof(T).Name}_{effectivePath}_{versionStatus}";
 
             // Try to get from cache - handle possible null value
             if (_cache.TryGetValue(cacheKey, out List<T>? cachedData) && cachedData != null)
             {
-               // return Task.FromResult(cachedData);
+               return Task.FromResult(cachedData);
             }
 
             // Not in cache – load data

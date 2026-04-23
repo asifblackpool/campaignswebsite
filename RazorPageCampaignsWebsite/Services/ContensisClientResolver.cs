@@ -16,12 +16,12 @@ namespace RazorPageCampaignsWebsite.Services
         
 
     }
-
-
     public class ContensisClientResolver : IContensisClientResolver
     {
         private ContensisClient? _cachedClient;
         private readonly IRequestContext _requestContext;
+        private string? _computedVersionStatus;
+        private bool? _computedIsPreview;
 
         public ContensisClientResolver(IRequestContext rc)
         {
@@ -30,44 +30,52 @@ namespace RazorPageCampaignsWebsite.Services
 
         public ContensisClient GetClient()
         {
-            // Cache per request (since resolver is scoped)
-            //if (_cachedClient != null)
-            //    return _cachedClient;
+            if (_cachedClient != null)
+                return _cachedClient;
 
-            bool isPreview = showVersionStatus == "latest" ? true : false;
-            string versionStatus = showVersionStatus;
-
-            string? temp = _requestContext.GetQueryStringVersionStatus();
-
-            if (temp != null)
-            {
-                _cachedClient = ContensisClientFactory.CreateClient(isPreview, temp);
-            }
-            else 
-            {
-              _cachedClient = ContensisClientFactory.CreateClient(isPreview, showVersionStatus);
-
-            }
-          
+            string versionStatus = DetermineVersionStatus();
+            _cachedClient = ContensisClientFactory.CreateClient(
+                isPreview: versionStatus == "latest",
+                QueryStringversionStatus: versionStatus
+            );
             return _cachedClient;
         }
-        /// <summary>
-        ///  if version status is latest
-        /// </summary>
-        public string showVersionStatus
-        {   get
+
+        private string DetermineVersionStatus()
+        {
+            // 1. Query string override
+            string? queryVersion = _requestContext.GetQueryStringVersionStatus();
+            if (!string.IsNullOrEmpty(queryVersion) && (queryVersion == "latest" || queryVersion == "published"))
             {
-                string entryVersionStatus = _requestContext.Headers.TryGetValue("x-entry-versionstatus", out var values) 
-                    ? values.FirstOrDefault() ?? "found" : "not found";
-                return entryVersionStatus;
+                _computedVersionStatus   = queryVersion;
+                _computedIsPreview       = queryVersion == "latest";
+                return _computedVersionStatus;
             }
+
+            // 2. Header from reverse proxy
+            if (_requestContext.Headers.TryGetValue("x-entry-versionstatus", out var headerValues))
+            {
+                string? headerVersion = headerValues.FirstOrDefault();
+                if (!string.IsNullOrEmpty(headerVersion) && (headerVersion == "latest" || headerVersion == "published"))
+                {
+                    _computedVersionStatus = headerVersion;
+                    _computedIsPreview = headerVersion == "latest";
+                    return _computedVersionStatus;
+                }
+            }
+
+            // 3. Host-based fallback
+            string host = _requestContext.Host.ToString().ToLower();
+            bool isPreviewHost = host.Contains("preview-blackpool") || host.Contains("cloud.contensis.com") || host.Contains("localhost");
+
+            _computedVersionStatus = isPreviewHost ? "latest" : "published";
+            _computedIsPreview = isPreviewHost;
+            return _computedVersionStatus;
         }
-           
-        public string showHost { get { return _requestContext.Host.ToString().ToLower(); } }
-        public bool isPreview { get { return _requestContext.IsPreview; } }
-        
 
-
-
+        // Interface implementation – exact naming (lowercase first letter)
+        public string showVersionStatus => _computedVersionStatus ?? DetermineVersionStatus();
+        public string showHost => _requestContext.Host.ToString().ToLower();
+        public bool isPreview => _computedIsPreview ?? (_computedVersionStatus == "latest");
     }
 }
