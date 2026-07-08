@@ -21,7 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # DEBUG: Verify the secret exists and has a value
       - name: Debug - Check GH_PAT secret
         run: |
           echo "Checking if GH_PAT secret is available..."
@@ -88,9 +87,9 @@ jobs:
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: campaigns-website
-          alias: blackpool
+          block-id: campaigns-website  # ? Your block ID
+          alias: blackpool             # ? Same as working workflow
           project-id: lgWebsite
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
-          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}  # ? Same as working workflow
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
