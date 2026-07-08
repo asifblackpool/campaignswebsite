@@ -81,15 +81,42 @@ jobs:
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
           docker version --format '{{.Client.Version}}'
-          
+
+      # DEBUG: Check Contensis credentials
+      - name: Debug Contensis credentials
+        run: |
+          echo "=== Contensis Credentials Debug ==="
+          echo "CONTENSIS_CLIENT_ID exists: ${{ secrets.CONTENSIS_CLIENT_ID != '' }}"
+          echo "CONTENSIS_SHARED_SECRET exists: ${{ secrets.CONTENSIS_SHARED_SECRET != '' }}"
+          echo "Client ID length: ${#CONTENSIS_CLIENT_ID}"
+          if [ -n "$CONTENSIS_CLIENT_ID" ]; then
+            echo "First 4 chars of Client ID: ${CONTENSIS_CLIENT_ID:0:4}"
+          else
+            echo "?? CONTENSIS_CLIENT_ID is empty or not set!"
+          fi
+          echo "=================================="
+        env:
+          CONTENSIS_CLIENT_ID: ${{ secrets.CONTENSIS_CLIENT_ID }}
+          CONTENSIS_SHARED_SECRET: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+
+      # DEBUG: Test authentication with CLI
+      - name: Test Contensis authentication
+        uses: contensis/cli-action@v1
+        with:
+          command: |
+            login ${{ secrets.CONTENSIS_CLIENT_ID }} -s ${{ secrets.CONTENSIS_SHARED_SECRET }}
+            environment set blackpool
+            echo "? Authentication successful!"
+            projects list
+
       - name: Push block to Contensis
         uses: contensis/block-push@v1
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: campaigns-website  # ? Your block ID
-          alias: blackpool             # ? Same as working workflow
+          block-id: campaigns-website
+          alias: blackpool
           project-id: lgWebsite
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
-          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}  # ? Same as working workflow
+          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
