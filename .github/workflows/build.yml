@@ -76,21 +76,21 @@ jobs:
       packages: write
 
     steps:
-      - name: Update Docker client
+      - name: Push block via Docker
         run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-          docker version --format '{{.Client.Version}}'
-
-      - name: Push block to Contensis
-        uses: contensis/block-push@v1
-        env:
-          DOCKER_API_VERSION: 1.44
-        with:
-          block-id: campaigns-website
-          alias: blackpool
-          project-id: lgWebsite
-          client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
-          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
-          image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
-          release: true
+          docker run --rm \
+            -e CONTENSIS_CLIENT_ID="${{ secrets.CONTENSIS_CLIENT_ID }}" \
+            -e CONTENSIS_SHARED_SECRET="${{ secrets.CONTENSIS_SHARED_SECRET }}" \
+            -e IMAGE_URI="${{ env.IMAGE_NAME }}:build-${{ github.run_number }}" \
+            -e GITHUB_REPO="${{ github.repository }}" \
+            -e GITHUB_SHA="${{ github.sha }}" \
+            ghcr.io/contensis/cli/main/app:release \
+            login $CONTENSIS_CLIENT_ID -s $CONTENSIS_SHARED_SECRET && \
+            block push \
+              --block-id campaigns-website \
+              --project-id lgWebsite \
+              --image-uri $IMAGE_URI \
+              --source-provider Github \
+              --source-repository https://github.com/$GITHUB_REPO.git \
+              --source-branch main \
+              --commit-id $GITHUB_SHA
