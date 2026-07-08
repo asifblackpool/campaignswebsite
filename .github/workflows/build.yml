@@ -91,11 +91,8 @@ jobs:
           CONTENSIS_SHARED_SECRET: ${{ secrets.CONTENSIS_SHARED_SECRET }}
         with:
           command: |
-            echo "=== Starting Contensis Block Push ==="
-            echo "Environment: $CONTENSIS_ALIAS"
-            contensis connect $CONTENSIS_ALIAS
+            connect $CONTENSIS_ALIAS
             login $CONTENSIS_CLIENT_ID -s $CONTENSIS_SHARED_SECRET
-            echo "? Logged in successfully"
             block push \
               --block-id campaigns-website \
               --project-id lgWebsite \
@@ -104,4 +101,3 @@ jobs:
               --source-repository https://github.com/${{ github.repository }}.git \
               --source-branch main \
               --commit-id ${{ github.sha }}
-            echo "? Block pushed successfully"
