@@ -82,25 +82,26 @@ jobs:
           sudo sh get-docker.sh
           docker version --format '{{.Client.Version}}'
 
-    - name: Push block via Contensis CLI
-      uses: contensis/cli-action@v1
-      env:
-        DOCKER_API_VERSION: 1.44
-        CONTENSIS_ALIAS: blackpool
-        CONTENSIS_CLIENT_ID: ${{ secrets.CONTENSIS_CLIENT_ID }}
-        CONTENSIS_SHARED_SECRET: ${{ secrets.CONTENSIS_SHARED_SECRET }}
-      with:
-        command: |
-          echo "=== Starting Contensis Block Push ==="
-          echo "Environment: $CONTENSIS_ALIAS"
-          login $CONTENSIS_CLIENT_ID -s $CONTENSIS_SHARED_SECRET
-          echo "? Logged in successfully"
-          block push \
-            --block-id campaigns-website \
-            --project-id lgWebsite \
-            --image-uri ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
-            --source-provider Github \
-            --source-repository https://github.com/${{ github.repository }}.git \
-            --source-branch main \
-            --commit-id ${{ github.sha }}
-          echo "? Block pushed successfully"
+      - name: Push block via Contensis CLI
+        uses: contensis/cli-action@v1
+        env:
+          DOCKER_API_VERSION: 1.44
+          CONTENSIS_ALIAS: blackpool
+          CONTENSIS_CLIENT_ID: ${{ secrets.CONTENSIS_CLIENT_ID }}
+          CONTENSIS_SHARED_SECRET: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+        with:
+          command: |
+            echo "=== Starting Contensis Block Push ==="
+            echo "Environment: $CONTENSIS_ALIAS"
+            contensis connect $CONTENSIS_ALIAS
+            login $CONTENSIS_CLIENT_ID -s $CONTENSIS_SHARED_SECRET
+            echo "? Logged in successfully"
+            block push \
+              --block-id campaigns-website \
+              --project-id lgWebsite \
+              --image-uri ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
+              --source-provider Github \
+              --source-repository https://github.com/${{ github.repository }}.git \
+              --source-branch main \
+              --commit-id ${{ github.sha }}
+            echo "? Block pushed successfully"
