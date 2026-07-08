@@ -1,10 +1,11 @@
-﻿using DotNetEnv;
-using Microsoft.AspNetCore.Http;
+﻿using Content.Modelling.CMS.Helpers.Errors;
+using Content.Modelling.Extensions;
+using Content.Modelling.Helpers.Connector;
+using Content.Modelling.Helpers.Errors;
+using Content.Modelling.Models.Search;
+using Content.Modelling.Services;
+using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Nancy;
 using RazorPageCampaignsWebsite.Constants;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling;
@@ -32,20 +33,12 @@ DotNetEnv.Env.TraversePath().Load();
 // Configure Forwarded Headers to trust the proxy
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    // Tell ASP.NET Core which headers to forward
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                                ForwardedHeaders.XForwardedProto |
                                ForwardedHeaders.XForwardedHost;
-
-    // If you know the proxy's IP address(es), add them for security.
-    // For development behind a trusted proxy (e.g., localhost or known network):
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
-
-    // ⚠️ Only do this if your proxy is fully trusted and you're not on a public network.
-    // In production, specify the actual proxy IPs or subnets.
-    // For now, this allows any proxy (common in container/cloud environments):
-    options.AllowedHosts.Clear(); // optional
+    options.AllowedHosts.Clear();
 });
 
 builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
@@ -59,10 +52,9 @@ builder.Services.AddScoped<ContensisClient>(sp =>
 
 // Register generic data service (this depends on IContensisClient)
 builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
-//register repositories
 builder.Services.AddTransient<IContentRepository, ContensisContentRepository>();
 
-//register helpers
+// Register helpers
 builder.Services.AddScoped<ISerializationHelper, SerializationHelper>();
 builder.Services.AddScoped<ICanvasPanelHelper, CanvasPanelHelperWrapper>();
 builder.Services.AddScoped<IPanelHelper, PanelHelperWrapper>();
@@ -79,7 +71,7 @@ builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWith
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
-//Processors
+// Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
 
 // Configure logging
@@ -92,7 +84,6 @@ builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
-        // Override root to always render blog post at '/'
         options.Conventions.AddPageRoute("/Home/Index", WebsiteConstants.SITE_VIEW_PATH);
         options.Conventions.AddPageRoute("/Home/Details", WebsiteConstants.SITE_VIEW_PATH + "{*slug}");
         options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
@@ -102,29 +93,32 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IRequestContext, RequestContext>();
 builder.Services.AddScoped<BreadcrumbService>();
 
-//automatic register all content handlers 
+// Automatic register all content handlers 
 builder.Services.AddContentHandlers();
+
+// Add all content modelling services (one line!)
+builder.Services.AddContentModelling(builder.Configuration, options =>
+{
+    options.DefaultCacheMinutes = 10;           // override default cache
+    options.DebugTokenKey = "DebugToken";       // change appsettings key if needed
+    options.EnableDebugModeByDefault = false;
+});
 
 var app = builder.Build();
 
+// ---------- ADD THIS LINE ----------
+app.UseContentModelling();   // Initialises ErrorDisplayHelper.DebugChecker
+// ----------------------------------
+
 app.UseForwardedHeaders();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-// app.UseHttpsRedirection(); NO SUPPORT FOR .NET 9,0 
 app.UseStaticFiles();
-
-// ===== REMOVE the rewrite options and UseRewriter =====
-// var rewriteOptions = new RewriteOptions()
-//     .AddRewrite(@"^$", WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/'), skipRemainingRules: true);
-// app.UseRewriter(rewriteOptions);
-// =====================================================
 
 // Block everything except static assets and /campaigns
 app.Use(async (context, next) =>
@@ -143,18 +137,14 @@ app.Use(async (context, next) =>
     await next();
 });
 
-
-
 app.UseRouting();
-
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");
 app.MapRazorPages();
 
 app.Run();
 
-
-#region static class to create the Contensis Client
+#region static class to create the Contensis Client (unchanged)
 
 public static class ContensisClientFactory
 {
@@ -199,32 +189,14 @@ public static class ContensisClientFactory
         );
     }
 
-    // Optional helper: returns a client based on a boolean flag
     public static ContensisClient CreateClient(bool isPreview, string QueryStringversionStatus)
     {
-
- 
-        // Decide which client to instantiate
         if (QueryStringversionStatus == "latest")
-        {
             return CreatePreviewClient();
-        }
         else if (QueryStringversionStatus == "published")
-        {
             return CreateLiveClient();
-        }
         else
-        {
-            if (isPreview)
-            {
-                return CreatePreviewClient();
-            }
-            else
-            {
-                return CreateLiveClient();
-            }
-        }
-      
+            return isPreview ? CreatePreviewClient() : CreateLiveClient();
     }
 }
 

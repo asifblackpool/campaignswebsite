@@ -5,41 +5,41 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageProjectUrl>/venues</PackageProjectUrl>
+    <!-- VERSION STAMP: Pipeline will auto-update this to 1.0.{run_number} -->
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="bin\Legacy\**" />
     <Compile Remove="Core\Models\Content\Components\**" />
-    <Compile Remove="Models\**" />
     <Compile Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <Content Remove="bin\Legacy\**" />
     <Content Remove="Core\Models\Content\Components\**" />
-    <Content Remove="Models\**" />
     <Content Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <EmbeddedResource Remove="bin\Legacy\**" />
     <EmbeddedResource Remove="Core\Models\Content\Components\**" />
-    <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <None Remove="bin\Legacy\**" />
     <None Remove="Core\Models\Content\Components\**" />
-    <None Remove="Models\**" />
     <None Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="nuget.config" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="2.5.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
-    <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.201" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.12.0" Version="12.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
-  </ItemGroup>
+    <!-- Shared library pulled securely from GitHub Packages during CI/CD -->
+    <PackageReference Include="Content.Modelling" Version="1.0.4" />
 
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Core\Models\Content\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\images\" />
@@ -47,40 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" />
+    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj" Condition="Exists('..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj')" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!--ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" /-->
-    <Reference Include="SharedLib">
-      <HintPath>libs\Content.Modelling.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-  </ItemGroup>
-
-<Target Name="CopyRequiredDlls" BeforeTargets="BeforeBuild">
-  <PropertyGroup>
-    <!-- Adjust these paths to match your exact structure -->
-    <SourceDllPath>C:\Development\Projects\repositories\shared\lgwebsite.data\content.modelling\bin\$(Configuration)\net8.0\Content.Modelling.dll</SourceDllPath>
-    <Destination1>C:\Development\Projects\repositories\campaignswebsite\shared</Destination1>
-    <Destination2>C:\Development\Projects\repositories\campaignswebsite\RazorPageCampaignsWebsite\libs</Destination2>
-  </PropertyGroup>
-
-  <!-- Create directories if they don't exist -->
-  <MakeDir Directories="$(Destination1);$(Destination2)" Condition="!Exists('$(Destination1)') or !Exists('$(Destination2)')" />
-
-  <Message Text="Attempting to copy from $(SourceDllPath)" Importance="high" />
-  
-  <Copy SourceFiles="$(SourceDllPath)" DestinationFolder="$(Destination1)" SkipUnchangedFiles="true" Condition="Exists('$(SourceDllPath)')">
-    <Output TaskParameter="CopiedFiles" PropertyName="CopiedFiles1" />
-  </Copy>
-  
-  <Copy SourceFiles="$(SourceDllPath)" DestinationFolder="$(Destination2)" SkipUnchangedFiles="true" Condition="Exists('$(SourceDllPath)')">
-    <Output TaskParameter="CopiedFiles" PropertyName="CopiedFiles2" />
-  </Copy>
-
-  <Message Text="Copied to shared: @(CopiedFiles1)" Importance="high" Condition="'@(CopiedFiles1)' != ''" />
-  <Message Text="Copied to libs: @(CopiedFiles2)" Importance="high" Condition="'@(CopiedFiles2)' != ''" />
-  <Warning Text="Source DLL not found at $(SourceDllPath)" Condition="!Exists('$(SourceDllPath)')" />
-</Target>
 </Project>

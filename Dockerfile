@@ -1,23 +1,45 @@
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
+ARG GH_PAT
 
 WORKDIR /src
-# The below allows layer caching for the restore.
 
-# Copy the Razor Pages project and the SharedLib DLL
+# Copy the Razor Pages project
 COPY RazorPageCampaignsWebsite/ ./RazorPageCampaignsWebsite/
-COPY shared/ ./RazorPageCampaignsWebsite/libs/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageCampaignsWebsite
 
-# Restore and publish the project
+# Debug: Check if GH_PAT is received
+RUN echo "=== DEBUG: GH_PAT length ===" && \
+    echo ${#GH_PAT}
+
+# Remove any existing GitHub sources
+RUN echo "=== Removing existing sources ===" && \
+    dotnet nuget remove source github 2>/dev/null || true && \
+    dotnet nuget remove source github-asifblackpool 2>/dev/null || true && \
+    dotnet nuget remove source github-auth 2>/dev/null || true
+
+# Add the source with the token
+RUN echo "=== Adding GitHub source with token ===" && \
+    dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
+        --name github \
+        --username asifblackpool \
+        --password "${GH_PAT}" \
+        --store-password-in-clear-text
+
+# List all sources to verify
+RUN echo "=== All NuGet sources ===" && \
+    dotnet nuget list source
+
+# Copy csproj and restore
 COPY --link /RazorPageCampaignsWebsite/*.csproj .
-RUN dotnet restore -a $TARGETARCH
+RUN echo "=== Running dotnet restore ===" && \
+    dotnet restore -a $TARGETARCH
 
 COPY --link /RazorPageCampaignsWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
-
 
 #############################
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
@@ -25,7 +47,7 @@ ENV ASPNETCORE_URLS=http://*:3001
 EXPOSE 3001
 WORKDIR /app/publish
 COPY --link --from=build /app/publish .
-USER $APP_UID
+USER app
 COPY --link /.env .
 COPY ./manifest.json /manifest.json
 ENTRYPOINT ["dotnet", "RazorPageCampaignsWebsite.dll"]

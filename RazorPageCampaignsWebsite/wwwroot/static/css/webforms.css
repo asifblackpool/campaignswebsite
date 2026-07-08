@@ -172,23 +172,23 @@
     min-width: 200px;
 }
 
-    .contensis-form-submit:hover {
-        background-color: #1d4ed8;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-    }
+.contensis-form-submit:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
 
-    .contensis-form-submit:focus {
-        outline: none;
-        border-color: #1e293b;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-    }
+.contensis-form-submit:focus {
+    outline: none;
+    border-color: #1e293b;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
 
-    .contensis-form-submit:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
+.contensis-form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
 
 /* ========================================
    Help Text

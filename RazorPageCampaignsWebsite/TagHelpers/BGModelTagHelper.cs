@@ -14,7 +14,7 @@ namespace RazorPageCampaignsWebsite.TagHelpers
     public class BGModelTagHelper : TagHelper
     {
         [HtmlAttributeName("model")]
-        public CampaignDetailsViewModel? Model { get; set; }
+        public DetailsViewModel? Model { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]

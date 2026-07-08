@@ -94,7 +94,7 @@ namespace RazorPageCampaignsWebsite.Helpers.Html
 
             var sections = new List<string>();
 
-            if (options.ShowEmailSection && !string.IsNullOrEmpty(serviceContact.emailAddress))
+            if (options.ShowEmailSection && !string.IsNullOrEmpty(serviceContact.EmailAddress))
             {
                 sections.Add(RenderEmailSection(serviceContact, options));
             }
@@ -165,8 +165,8 @@ namespace RazorPageCampaignsWebsite.Helpers.Html
             <div class=""contact-method contact-email"">
                 <{options.MethodTitleTag} class=""method-title"">By email</{options.MethodTitleTag}>
                 <p class=""method-detail"">
-                    <a href=""mailto:{serviceContact.emailAddress}"" class=""{options.LinkCssClass}""{targetAttr}{ariaLabel}>
-                        {HtmlEncode(serviceContact.emailAddress)}
+                    <a href=""mailto:{serviceContact.EmailAddress}"" class=""{options.LinkCssClass}""{targetAttr}{ariaLabel}>
+                        {HtmlEncode(serviceContact.EmailAddress)}
                     </a>
                 </p>
             </div>";
