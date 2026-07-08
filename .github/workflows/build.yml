@@ -76,28 +76,14 @@ jobs:
       packages: write
 
     steps:
-      - name: Update Docker client
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-          docker version --format '{{.Client.Version}}'
-
-      - name: Push block via Contensis CLI
-        uses: contensis/cli-action@v1
+      - name: Push block to Contensis
+        uses: contensis/block-push@v1
         env:
           DOCKER_API_VERSION: 1.44
-          CONTENSIS_ALIAS: blackpool
-          CONTENSIS_CLIENT_ID: ${{ secrets.CONTENSIS_CLIENT_ID }}
-          CONTENSIS_SHARED_SECRET: ${{ secrets.CONTENSIS_SHARED_SECRET }}
         with:
-          command: |
-            connect $CONTENSIS_ALIAS
-            login $CONTENSIS_CLIENT_ID -s $CONTENSIS_SHARED_SECRET
-            block push \
-              --block-id campaigns-website \
-              --project-id lgWebsite \
-              --image-uri ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
-              --source-provider Github \
-              --source-repository https://github.com/${{ github.repository }}.git \
-              --source-branch main \
-              --commit-id ${{ github.sha }}
+          block-id: campaigns-website
+          alias: blackpool
+          project-id: lgWebsite
+          client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
+          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
