@@ -82,17 +82,14 @@ jobs:
           sudo sh get-docker.sh
           docker version --format '{{.Client.Version}}'
           
-      - name: Push block to Contensis (New Block Test)
+      - name: Push block to Contensis
         uses: contensis/block-push@v1
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: campaigns-website-test-new
+          block-id: business-website  # ← Using business block as test
           alias: blackpool
           project-id: lgWebsite
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
-          source-repository: https://github.com/${{ github.repository }}.git
-          source-branch: main
-          commit-id: ${{ github.sha }}
