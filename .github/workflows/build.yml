@@ -94,9 +94,10 @@ jobs:
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: business-website  # ← Using business block as test
+          block-id: campaigns-website
           alias: blackpool
           project-id: lgWebsite
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
+
