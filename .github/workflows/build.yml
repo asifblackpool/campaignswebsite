@@ -32,11 +32,11 @@ jobs:
         run: |
           echo "Checking if GH_PAT secret is available..."
           if [ -n "$GH_PAT" ]; then
-            echo "? GH_PAT is set!"
+            echo "✅ GH_PAT is set!"
             echo "Token length: ${#GH_PAT}"
             echo "Token first 4 chars: ${GH_PAT:0:4}"
           else
-            echo "? GH_PAT is NOT set or is empty!"
+            echo "❌ GH_PAT is NOT set or is empty!"
             exit 1
           fi
         env:
@@ -83,15 +83,20 @@ jobs:
       packages: write
 
     steps:
+      - name: Update Docker client
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          docker version --format '{{.Client.Version}}'
+          
       - name: Push block to Contensis
         uses: contensis/block-push@v1
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: campaigns-website
+          block-id: business-website  # ← Using business block as test
           alias: blackpool
           project-id: lgWebsite
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
-          release: true  # ? This is the key change!
