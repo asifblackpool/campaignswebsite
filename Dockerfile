@@ -1,53 +1,98 @@
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG TARGETARCH
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 443
+
+# Set production environment
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Build arguments for secrets
 ARG GH_PAT
+ARG PROJECT_API_ID
+ARG ALIAS
+ARG CONTENSIS_CLIENT_ID
+ARG CONTENSIS_CLIENT_SECRET
+ARG ACCESS_TOKEN
+ARG BLOCK_ID
+
+# Set environment variables in build stage
+ENV GH_PAT=${GH_PAT} \
+    PROJECT_API_ID=${PROJECT_API_ID} \
+    ALIAS=${ALIAS} \
+    CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID} \
+    CONTENSIS_CLIENT_SECRET=${CONTENSIS_CLIENT_SECRET} \
+    ACCESS_TOKEN=${ACCESS_TOKEN} \
+    BLOCK_ID=${BLOCK_ID}
 
 WORKDIR /src
 
-# Copy the Razor Pages project
-COPY RazorPageCampaignsWebsite/ ./RazorPageCampaignsWebsite/
+# Copy project files
+COPY RazorPageCampaignsWebsite/*.csproj ./RazorPageCampaignsWebsite/
 
-# Set working directory to the web project
+# Add GitHub Packages source
+RUN dotnet nuget add source \
+    --name github \
+    --username asifblackpool \
+    --password $GH_PAT \
+    --store-password-in-clear-text \
+    https://nuget.pkg.github.com/asifblackpool/index.json
+
+# Show sources for debugging
+RUN dotnet nuget list source
+
 WORKDIR /src/RazorPageCampaignsWebsite
 
-# Debug: Check if GH_PAT is received
-RUN echo "=== DEBUG: GH_PAT length ===" && \
-    echo ${#GH_PAT}
+# Restore packages
+RUN dotnet restore
 
-# Remove any existing GitHub sources
-RUN echo "=== Removing existing sources ===" && \
-    dotnet nuget remove source github 2>/dev/null || true && \
-    dotnet nuget remove source github-asifblackpool 2>/dev/null || true && \
-    dotnet nuget remove source github-auth 2>/dev/null || true
+# Copy rest of code and publish
+COPY RazorPageCampaignsWebsite/. .
 
-# Add the source with the token
-RUN echo "=== Adding GitHub source with token ===" && \
-    dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
-        --name github \
-        --username asifblackpool \
-        --password "${GH_PAT}" \
-        --store-password-in-clear-text
+# =============================================
+# PUBLISH WITH RAZOR COMPILATION FORCED
+# This prevents runtime file watchers in production
+# =============================================
+RUN dotnet publish --runtime linux-amd64 --self-contained false -o /app/publish \
+    -p:RazorCompileOnBuild=true \
+    -p:RazorCompileOnPublish=true
 
-# List all sources to verify
-RUN echo "=== All NuGet sources ===" && \
-    dotnet nuget list source
+FROM base AS final
+WORKDIR /app
 
-# Copy csproj and restore
-COPY --link /RazorPageCampaignsWebsite/*.csproj .
-RUN echo "=== Running dotnet restore ===" && \
-    dotnet restore -a $TARGETARCH
+# Accept build arguments again
+ARG PROJECT_API_ID
+ARG ALIAS
+ARG CONTENSIS_CLIENT_ID
+ARG CONTENSIS_CLIENT_SECRET
+ARG ACCESS_TOKEN
+ARG BLOCK_ID
 
-COPY --link /RazorPageCampaignsWebsite/. .
-RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
+# Set environment variables in the final stage
+ENV PROJECT_API_ID=${PROJECT_API_ID} \
+    ALIAS=${ALIAS} \
+    CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID} \
+    CONTENSIS_CLIENT_SECRET=${CONTENSIS_CLIENT_SECRET} \
+    ACCESS_TOKEN=${ACCESS_TOKEN} \
+    BLOCK_ID=${BLOCK_ID} \
+    ASPNETCORE_ENVIRONMENT=Production
 
-#############################
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-ENV ASPNETCORE_URLS=http://*:3001
-EXPOSE 3001
-WORKDIR /app/publish
-COPY --link --from=build /app/publish .
-USER app
-COPY --link /.env .
-COPY ./manifest.json /manifest.json
+# Copy the published app
+COPY --from=build /app/publish .
+COPY manifest.json /manifest.json
+
+# Create .env file for the application
+RUN echo "PROJECT_API_ID=${PROJECT_API_ID}" > .env && \
+    echo "ALIAS=${ALIAS}" >> .env && \
+    echo "CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID}" >> .env && \
+    echo "CONTENSIS_CLIENT_SECRET=${CONTENSIS_CLIENT_SECRET}" >> .env && \
+    echo "ACCESS_TOKEN=${ACCESS_TOKEN}" >> .env && \
+    echo "BLOCK_ID=${BLOCK_ID}" >> .env
+
+
 ENTRYPOINT ["dotnet", "RazorPageCampaignsWebsite.dll"]
+
+

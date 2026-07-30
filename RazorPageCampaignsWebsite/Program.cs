@@ -1,10 +1,4 @@
-﻿using Content.Modelling.CMS.Helpers.Errors;
-using Content.Modelling.Extensions;
-using Content.Modelling.Helpers.Connector;
-using Content.Modelling.Helpers.Errors;
-using Content.Modelling.Models.Search;
-using Content.Modelling.Services;
-using DotNetEnv;
+﻿using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
 using RazorPageCampaignsWebsite.Constants;
 using RazorPageCampaignsWebsite.Core.Interfaces;
@@ -18,12 +12,16 @@ using RazorPageCampaignsWebsite.Helpers.Renderers;
 using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
 using RazorPageCampaignsWebsite.Helpers.Serialisation;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
-using RazorPageCampaignsWebsite.Infrastructure.Repositories;
+using RazorPageBusinessWebsite.Infrastructure.Repositories;
 using RazorPageCampaignsWebsite.Middleware;
 using RazorPageCampaignsWebsite.Services;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
 using RazorPageCampaignsWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
+using Microsoft.AspNetCore.Rewrite;
+using Content.Modelling.Extensions;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,12 +31,12 @@ DotNetEnv.Env.TraversePath().Load();
 // Configure Forwarded Headers to trust the proxy
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                               ForwardedHeaders.XForwardedProto |
-                               ForwardedHeaders.XForwardedHost;
-    options.KnownNetworks.Clear();
-    options.KnownProxies.Clear();
-    options.AllowedHosts.Clear();
+options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                           ForwardedHeaders.XForwardedProto |
+                           ForwardedHeaders.XForwardedHost;
+options.KnownNetworks.Clear();
+options.KnownProxies.Clear();
+options.AllowedHosts.Clear();
 });
 
 builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
@@ -46,8 +44,8 @@ builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
 // Register the concrete ContensisClient so that any class expecting it gets the correct per‑request client
 builder.Services.AddScoped<ContensisClient>(sp =>
 {
-    var resolver = sp.GetRequiredService<IContensisClientResolver>();
-    return resolver.GetClient();
+var resolver = sp.GetRequiredService<IContensisClientResolver>();
+return resolver.GetClient();
 });
 
 // Register generic data service (this depends on IContensisClient)
@@ -78,16 +76,22 @@ builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
 builder.Services.AddLogging(configure =>
     configure.AddConsole().SetMinimumLevel(LogLevel.Information));
 
-// Add services to the container
+// Register IZengentiClient adapter and ContentViewModelService
+builder.Services.AddScoped<IZengentiClient, ZengentiClientAdapter>();
+builder.Services.AddScoped<ContentViewModelService>();
+
+// ===== MVC Controllers =====
+builder.Services.AddControllersWithViews();
+
+// ===== Razor Pages =====
 string relativeUrlPath = WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/');
 builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
-    {
-        options.Conventions.AddPageRoute("/Home/Index", WebsiteConstants.SITE_VIEW_PATH);
-        options.Conventions.AddPageRoute("/Home/Details", WebsiteConstants.SITE_VIEW_PATH + "{*slug}");
-        options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
-    });
+{
+options.RootDirectory = "/Pages";
+options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
+});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IRequestContext, RequestContext>();
@@ -99,53 +103,88 @@ builder.Services.AddContentHandlers();
 // Add all content modelling services (one line!)
 builder.Services.AddContentModelling(builder.Configuration, options =>
 {
-    options.DefaultCacheMinutes = 10;           // override default cache
-    options.DebugTokenKey = "DebugToken";       // change appsettings key if needed
-    options.EnableDebugModeByDefault = false;
+options.DefaultCacheMinutes = 10;
+options.DebugTokenKey = "DebugToken";
+options.EnableDebugModeByDefault = false;
 });
+
+// Register the factory that maps Contensis content types to view models
+builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
-// ---------- ADD THIS LINE ----------
-app.UseContentModelling();   // Initialises ErrorDisplayHelper.DebugChecker
-// ----------------------------------
-
+app.UseContentModelling();
 app.UseForwardedHeaders();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+app.UseExceptionHandler("/Error");
+app.UseHsts();
+}
+else
+{
+app.Use(async (context, next) =>
+{
+context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+context.Response.Headers["Pragma"] = "no-cache";
+context.Response.Headers["Expires"] = "0";
+await next();
+});
 }
 
 app.UseStaticFiles();
 
-// Block everything except static assets and /campaigns
-app.Use(async (context, next) =>
-{
-    var path = context.Request.Path.Value ?? "";
-    bool isStaticAsset = path.StartsWith("/css/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/js/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/lib/", StringComparison.OrdinalIgnoreCase);
+// Redirect root to your-council
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH, app.Environment.IsDevelopment() ? 302 : 301));
 
-    if (!isStaticAsset && !path.StartsWith("/campaigns", StringComparison.OrdinalIgnoreCase))
-    {
-        context.Response.StatusCode = 404;
-        return;
-    }
-    await next();
-});
+// Restrictive middleware has been REMOVED – now routing and controllers handle 404s.
 
 app.UseRouting();
+
+string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "business"
+
+// 1. EXACT match for /Business (or /business) – must come first
+app.MapControllerRoute(
+    name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
+    pattern: WebsiteConstants.SITE_PATH,  // literal "business" (case‑insensitive matches business too)
+    defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
+);
+
+// 2. Section route for /business/{section}/... (requires at least one segment after business/)
+app.MapControllerRoute(
+    name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
+    pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",
+    defaults: new { controller = string.Format("{0}Section", WebsiteConstants.SITE_CONTROLLER), action = "Index" }
+);
+
+
+
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");
-app.MapRazorPages();
+app.MapRazorPages(); // Razor Pages still available for non your council routes
+
+// ===== WARM UP CONTENSIS CLIENT to avoid first‑request timeout =====
+using (var warmupScope = app.Services.CreateScope())
+{
+var warmupClient = warmupScope.ServiceProvider.GetRequiredService<IZengentiClient>();
+var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+// Synchronous call to initialise the client (avoids async complications)
+warmupClient.GetNodeByPathAsync("/").GetAwaiter().GetResult();
+logger.LogInformation("Contensis client warmed up successfully.");
+}
+catch (Exception ex)
+{
+logger.LogWarning(ex, "Contensis client warm‑up failed – first request may be slow.");
+}
+}
 
 app.Run();
 
-#region static class to create the Contensis Client (unchanged)
-
+#region ContensisClientFactory (unchanged)
 public static class ContensisClientFactory
 {
     private static readonly object _lock = new object();
@@ -199,5 +238,4 @@ public static class ContensisClientFactory
             return isPreview ? CreatePreviewClient() : CreateLiveClient();
     }
 }
-
 #endregion

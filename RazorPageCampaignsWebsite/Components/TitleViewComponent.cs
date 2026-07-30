@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RazorPageCampaignsWebsite.Components.Extensions;
 using RazorPageCampaignsWebsite.Core.Models;
 
 namespace RazorPageCampaignsWebsite.Components
@@ -17,7 +18,7 @@ namespace RazorPageCampaignsWebsite.Components
                 IsHomePage = ViewContext.RouteData.Values["page"]?.ToString() == "/Home/Index"
             };
 
-            return View(model);
+            return View(ViewComponentExtensions.GetViewPath("Title"), model);
         }
     }
 }

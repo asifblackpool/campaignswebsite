@@ -1,12 +1,10 @@
 ﻿using Content.Modelling.Models.Canvas.Images;
 using Microsoft.AspNetCore.Mvc;
+using RazorPageCampaignsWebsite.Components.Extensions;
 using RazorPageCampaignsWebsite.Core.Models.ViewModels;
 using RazorPageCampaignsWebsite.Helpers;
-using RazorPageCampaignsWebsite.Helpers.Interfaces;
-using Sprache;
-using Zengenti;
 
-namespace RazorPageCampaignsWebsite.Components.ImageGalleryNew
+namespace RazorPageYourCouncilWebsite.Components.ImageGalleryNew
 {
     public class WebFormsViewComponent : ViewComponent
     {
@@ -27,10 +25,10 @@ namespace RazorPageCampaignsWebsite.Components.ImageGalleryNew
                         ImageUrl = (item.Asset!= null) ? ImageHelper.GetImageUrl(item.Asset.System?.Uri) : "#"
                     });
 
-                    return View(list);
+                    return View(ViewComponentExtensions.GetViewPath("ImageGalleryNew"), list);
                 }
             }
-            return View(null);
+            return View(ViewComponentExtensions.GetViewPath("ImageGalleryNew"), new List<SimpleImageViewModel>());
         }
     }
 

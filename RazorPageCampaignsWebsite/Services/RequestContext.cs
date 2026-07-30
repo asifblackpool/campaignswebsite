@@ -38,12 +38,11 @@ namespace RazorPageCampaignsWebsite.Services
             }
         }
 
-        public IHeaderDictionary? Headers
+        public IHeaderDictionary Headers
         {
             get
             {
-             
-                return _httpContextAccessor.HttpContext?.Request.Headers;
+                return  _httpContextAccessor.HttpContext?.Request.Headers ?? new HeaderDictionary();  // ✅ Returns empty instead of null
             }
         }
 

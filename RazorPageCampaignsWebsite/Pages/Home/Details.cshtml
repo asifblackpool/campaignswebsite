@@ -1,17 +1,13 @@
-﻿@page
-@model RazorPageCampaignsWebsite.Pages.Home.DetailsModel
+﻿@model RazorPageCampaignsWebsite.Pages.Home.DetailsModel
 
-@* Use the ViewModel property - already populated by the base class! *@
-
-
-@* Optional: Display type information *@
-@if (!string.IsNullOrEmpty(Model.ViewModel.ModelType))
+@if (Model.ViewModel == null)
 {
-    <p class="text-muted" style="display:none;">Content Type: @Model.ViewModel.ModelType</p>
-      @Html.Raw(string.Format("{0}",@Model.ViewModel.DataMessage))
+    <h1>Page not found</h1>
 }
-
-<bg-model model="@Model.ViewModel" />
+else
+{
+    <partial name="@Model.ViewName" model="Model.ViewModel" />
+}
 
 <style type="text/css">
     main {

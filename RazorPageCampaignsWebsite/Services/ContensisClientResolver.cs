@@ -16,6 +16,7 @@ namespace RazorPageCampaignsWebsite.Services
         
 
     }
+
     public class ContensisClientResolver : IContensisClientResolver
     {
         private ContensisClient? _cachedClient;

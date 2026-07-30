@@ -5,18 +5,32 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  packages: write
-  deployments: write
-  actions: write
-
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
+  debug-secrets:
+    name: Debug Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify BLOCK_ID
+        run: |
+          echo "=== BLOCK_ID VERIFICATION ==="
+          echo "BLOCK_ID: ${{ secrets.BLOCK_ID }}"
+          if [ -z "${{ secrets.BLOCK_ID }}" ]; then
+            echo "❌ BLOCK_ID is empty!"
+            exit 1
+          else
+            echo "✅ BLOCK_ID is set"
+            if [ "${{ secrets.BLOCK_ID }}" = "business-website" ]; then
+              echo "✅ BLOCK_ID is correct! (business-website)"
+            else
+              echo "⚠️  BLOCK_ID is: ${{ secrets.BLOCK_ID }}"
+              echo "   Expected: business-website"
+            fi
+          fi
+
   build-latest:
     name: Build Block
     runs-on: ubuntu-latest
@@ -34,7 +48,6 @@ jobs:
           if [ -n "$GH_PAT" ]; then
             echo "✅ GH_PAT is set!"
             echo "Token length: ${#GH_PAT}"
-            echo "Token first 4 chars: ${GH_PAT:0:4}"
           else
             echo "❌ GH_PAT is NOT set or is empty!"
             exit 1
@@ -59,15 +72,39 @@ jobs:
 
       - name: Build Docker image
         run: |
-          echo "Building with GH_PAT (first 4 chars): ${GH_PAT:0:4}"
           docker build \
             --build-arg GH_PAT=${{ secrets.GH_PAT }} \
+            --build-arg PROJECT_API_ID=${{ secrets.PROJECT_API_ID }} \
+            --build-arg ALIAS=${{ secrets.ALIAS }} \
+            --build-arg CONTENSIS_CLIENT_ID=${{ secrets.CONTENSIS_CLIENT_ID }} \
+            --build-arg CONTENSIS_CLIENT_SECRET=${{ secrets.CONTENSIS_SHARED_SECRET }} \
+            --build-arg ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} \
+            --build-arg BLOCK_ID=${{ secrets.BLOCK_ID }} \
             --build-arg TARGETARCH=amd64 \
             -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+
+      # =============================================
+      # FIXED DEBUG STEP - Uses printenv to avoid "Bad substitution"
+      # =============================================
+      - name: Debug - Verify .env file in Docker image
+        run: |
+          echo "=== VERIFYING .env FILE IN DOCKER IMAGE ==="
+          echo ""
+          echo "1. Checking if .env exists..."
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "ls -la .env && echo '✅ .env file found!' || echo '❌ .env file NOT found!'"
+          echo ""
+          echo "2. .env file contents (MASKED):"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo '❌ Failed to read .env file!'"
+          echo ""
+          echo "3. Checking ACCESS_TOKEN environment variable (first 10 chars only):"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv ACCESS_TOKEN | head -c 10 && echo '... (truncated)' || echo '❌ ACCESS_TOKEN not found!'"
+          echo ""
+          echo "4. All environment variables (MASKED):"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv | grep -E 'PROJECT_API_ID|ALIAS|CONTENSIS|ACCESS_TOKEN|BLOCK_ID' | sed 's/=.*/=***MASKED***/g' || echo 'No matching variables found'"
+          echo "=== DEBUG COMPLETE ==="
+        continue-on-error: true
 
       - name: Push Docker image
         run: |
@@ -94,10 +131,9 @@ jobs:
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: campaigns-website
-          alias: blackpool
-          project-id: lgWebsite
+          block-id: ${{ secrets.BLOCK_ID }}
+          alias: ${{ secrets.ALIAS }}
+          project-id: ${{ secrets.PROJECT_API_ID }}
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
-

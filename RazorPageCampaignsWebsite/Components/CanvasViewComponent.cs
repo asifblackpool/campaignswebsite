@@ -1,7 +1,8 @@
 ﻿using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Mvc;
+using RazorPageCampaignsWebsite.Components.Extensions;
 
-namespace RazorPageCampaignsWebsite.Components
+namespace RazorPageYourCouncilWebsite.Components
 {
     [ViewComponent]
     public class CanvasViewComponent : ViewComponent
@@ -12,10 +13,11 @@ namespace RazorPageCampaignsWebsite.Components
             if (content != null)
             {
 
-                return View(content);
+                return View(ViewComponentExtensions.GetViewPath("Canvas"),content);
             }
-            return View();
+            return View(ViewComponentExtensions.GetViewPath("Canvas"));
         }
+    }
 
         // Alternative async version if you need to do async work
         /*
@@ -25,5 +27,5 @@ namespace RazorPageCampaignsWebsite.Components
             return View(model);
         }
         */
-    }
+    
 }

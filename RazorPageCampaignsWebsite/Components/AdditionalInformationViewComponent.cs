@@ -4,8 +4,8 @@ using Content.Modelling.Models.Templates;
 using Microsoft.AspNetCore.Mvc;
 using Content.Modelling.Models.AssetGallery;
 using RazorPageCampaignsWebsite.Core.Models.ViewModels;
-using RazorPageCampaignsWebsite.Core.Interfaces;
 using Zengenti.Contensis.Delivery;
+using RazorPageCampaignsWebsite.Components.Extensions;
 
 namespace RazorPageCampaignsWebsite.Components
 {
@@ -56,7 +56,7 @@ namespace RazorPageCampaignsWebsite.Components
                     LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
                 };
 
-                return View(viewModel);
+                return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
 
             if (model is BGStandard)
@@ -76,11 +76,11 @@ namespace RazorPageCampaignsWebsite.Components
 
                 };
 
-                return View(viewModel);
+                return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
             // Cast to BGStandard to access the properties
             return Content(string.Empty);
-          
+
         }
     }
 }

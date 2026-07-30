@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RazorPageCampaignsWebsite.Components.Extensions;
+using Zengenti.Contensis.Delivery;
 
 
-namespace RazorPageCampaignsWebsite.Components.WebForms
+namespace RazorPageYourCouncilWebsite.Components.WebForms
 {
     public class WebFormsViewComponent : ViewComponent
     {
@@ -12,11 +14,11 @@ namespace RazorPageCampaignsWebsite.Components.WebForms
 
             if (frm != null)
             {
-              
-                    return View(frm);
-                
+             
+                return View(ViewComponentExtensions.GetViewPath("WebForms"), frm);
+
             }
-            return View(null);
+            return View(ViewComponentExtensions.GetViewPath("WebfFroms"));
         }
     }
 
