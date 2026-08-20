@@ -17,5 +17,8 @@
         public static readonly string SITE_VIEW_PATH = SITE_PATH + "/";
         public static readonly string SHARED_COMPONENTS_PATH = "~/Pages/Components";
 
+        public static readonly string ROOT_PREVIEW_URL = "https://preview-blackpool.cloud.contensis.com/Home.aspx";
+        public static readonly string ROOT_LIVE_URL = "https://blackpool.gov.uk/home.aspx";
+
     }
 }
