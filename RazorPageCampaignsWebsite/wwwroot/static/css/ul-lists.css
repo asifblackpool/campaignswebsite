@@ -3,6 +3,7 @@
     /* Main brand colors */
     --ul-primary-color: #041c2c; 
     --ul-print-color: #000;
+        --link-color: #830065;
 }
 
     ul.shade-black {
@@ -22,6 +23,12 @@
     ul.shade-black li::before {
         left: 12px;
     }
+
+    ul.shade-black > li > a,
+    ol.shade-black > li > a {
+    color: var(--link-color)
+}
+
 
 @media screen and (max-width: 640px) {
 
