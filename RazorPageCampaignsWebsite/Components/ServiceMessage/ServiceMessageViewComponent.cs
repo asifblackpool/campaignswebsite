@@ -3,7 +3,7 @@ using RazorPageCampaignsWebsite.Components.Extensions;
 using Zengenti.Contensis.Delivery;
 
 
-namespace RazorPageYourCouncilWebsite.Components.ServiceMessage
+namespace RazorPageCampaignsWebsite.Components.ServiceMessage
 {
     public class ServiceMessageViewComponent : ViewComponent
     {

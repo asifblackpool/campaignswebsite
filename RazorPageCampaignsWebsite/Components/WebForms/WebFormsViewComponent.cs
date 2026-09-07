@@ -3,7 +3,7 @@ using RazorPageCampaignsWebsite.Components.Extensions;
 using Zengenti.Contensis.Delivery;
 
 
-namespace RazorPageYourCouncilWebsite.Components.WebForms
+namespace RazorPageCampaignsWebsite.Components.WebForms
 {
     public class WebFormsViewComponent : ViewComponent
     {

@@ -1,10 +1,9 @@
-﻿using Content.Modelling.Models.Canvas.Images;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RazorPageCampaignsWebsite.Components.Extensions;
 using RazorPageCampaignsWebsite.Core.Models.ViewModels;
 using RazorPageCampaignsWebsite.Helpers;
 
-namespace RazorPageYourCouncilWebsite.Components.ImageGalleryNew
+namespace RazorPageCampaignsWebsite.Components.ImageGalleryNew
 {
     public class WebFormsViewComponent : ViewComponent
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RazorPageCampaignsWebsite.Components.Extensions;
 
-namespace RazorPageYourCouncilWebsite.Components
+namespace RazorPageCampaignsWebsite.Components
 {
     [ViewComponent]
     public class CanvasViewComponent : ViewComponent
