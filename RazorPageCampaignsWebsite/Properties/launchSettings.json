@@ -3,17 +3,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:3000",
+      "applicationUrl": "https://localhost:5001/your-council/voting-and-elections/elections/claremont-ward-by-election-2026",
       "sslPort": 44322
     }
   },
   "profiles": {
-    "RazorPageCampaignsWebsite": {
+    "RazorPageCouncilWebsite": {
       "commandName": "Project",
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "campaigns/youth-climate-action-fund-application-form",
+      "launchUrl": "https://localhost:5001/your-council/voting-and-elections/elections/claremont-ward-by-election-2026",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "campaigns/youth-climate-action-fund-application-form",
+      "launchUrl": "https://localhost:5001/your-council/voting-and-elections/elections/claremont-ward-by-election-2026",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

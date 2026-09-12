@@ -6,7 +6,7 @@ namespace RazorPageCampaignsWebsite.Controllers
 {
     public class CmsFallbackController : DynamicCmsController
     {
-        public CmsFallbackController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<CampaignsController> logger)
+        public CmsFallbackController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<YourCouncilController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
 
         public async Task<IActionResult> Dynamic(string section, string slug)

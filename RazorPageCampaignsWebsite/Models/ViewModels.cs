@@ -14,29 +14,20 @@ namespace RazorPageCampaignsWebsite.Models
     #region View Models
 
 
-    public class BusinessHomeViewModel : BaseViewModel
+    public class CampaignsHomeViewModel : BaseViewModel
     {
 
     }
 
-    public class BusinessRatesViewModel : BaseViewModel
-    {
-
-    }
-
-    public class CommercialWasteViewModel : BaseViewModel
-    {
-
-    }
 
     public class SectionRootViewModel : BaseViewModel
     {
-
+      
     }
 
     public class GenericPageViewModel : BaseViewModel
     {
-
+      
     }
 
     #endregion

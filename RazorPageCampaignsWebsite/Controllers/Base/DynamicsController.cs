@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using RazorPageCampaignsWebsite.Constants;
+using RazorPageCampaignsWebsite.ViewModels;
 using RazorPageCampaignsWebsite.Models;
 using RazorPageCampaignsWebsite.Services.Interfaces;
-using RazorPageCampaignsWebsite.ViewModels;
 
 namespace RazorPageCampaignsWebsite.Controllers.Base
 {

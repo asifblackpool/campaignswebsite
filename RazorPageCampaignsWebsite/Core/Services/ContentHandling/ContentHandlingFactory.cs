@@ -13,6 +13,7 @@ namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling
 
         public IContentHandler GetHandler(string className)
         {
+            string temp = className;
             return _handlers.FirstOrDefault(h => h.CanHandle(className))
                    ?? throw new InvalidOperationException($"No handler found for {className}");
         }

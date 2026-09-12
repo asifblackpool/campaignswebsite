@@ -5,17 +5,16 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 
 namespace RazorPageCampaignsWebsite.Controllers
 {
-    public class CampaignsSectionController : DynamicCmsController
+    public class YourCouncilSectionController : DynamicCmsController
     {
         // Tell the base controller to look for views in the "Your council" folder
         protected override string ViewFolder => WebsiteConstants.VIEW_FOLDER;
 
-        public CampaignsSectionController(
+        public YourCouncilSectionController(
             IZengentiClient cmsClient,
             ICmsViewModelFactory viewModelFactory,
             ILogger<YourCouncilSectionController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
-        
 
         public async Task<IActionResult> Index(string section, string slug)
         {

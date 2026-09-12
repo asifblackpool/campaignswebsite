@@ -42,11 +42,11 @@ namespace RazorPageCampaignsWebsite.Services
         {
             get
             {
-                return  _httpContextAccessor.HttpContext?.Request.Headers ?? new HeaderDictionary();  // ✅ Returns empty instead of null
+                return _httpContextAccessor.HttpContext?.Request.Headers ?? new HeaderDictionary();  // ✅ Returns empty instead of null
             }
         }
 
-      
+
         public QueryString? QueryString
         {
             get { return _httpContextAccessor?.HttpContext?.Request.QueryString; }

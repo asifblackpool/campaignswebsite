@@ -12,7 +12,6 @@ using RazorPageCampaignsWebsite.Helpers.Renderers;
 using RazorPageCampaignsWebsite.Helpers.Renderers.Components;
 using RazorPageCampaignsWebsite.Helpers.Serialisation;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
-using RazorPageBusinessWebsite.Infrastructure.Repositories;
 using RazorPageCampaignsWebsite.Middleware;
 using RazorPageCampaignsWebsite.Services;
 using RazorPageCampaignsWebsite.Services.Breadcrumb;
@@ -20,6 +19,7 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
 using Content.Modelling.Extensions;
+using RazorPageCampaignsWebsite.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +47,7 @@ builder.Services.AddScoped<ContensisClient>(sp =>
 });
 
 // Register generic data service (this depends on IContensisClient)
-builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
+builder.Services.AddScoped(typeof(IDataService<>), typeof(ContensisDataService<>));
 builder.Services.AddTransient<IContentRepository, ContensisContentRepository>();
 
 // Register helpers
@@ -109,7 +109,15 @@ builder.Services.AddContentModelling(builder.Configuration, options =>
 // Register the factory that maps Contensis content types to view models
 builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 
-builder.Services.AddMemoryCache();
+// ===== In-memory cache with size limit =====
+// SetSize(1) is used on every cache entry in ZengentiClientAdapter and
+// ContensisDataService, so this limit is enforced.
+// 1024 entries × ~5 min TTL is plenty for a site of this size; tune up if
+// you have a large number of distinct pages.
+builder.Services.AddMemoryCache(options =>
+{
+    options.SizeLimit = 1024;
+});
 
 var app = builder.Build();
 
@@ -134,46 +142,23 @@ else
 
 app.UseStaticFiles();
 
-// ===== ENVIRONMENT-AWARE REDIRECT =====
-// Redirect root and /campaigns based on the request URL (preview vs live)
-app.Use(async (context, next) =>
-{
-    var path = context.Request.Path.Value?.TrimEnd('/') ?? "";
+// Redirect root to your-council
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH, app.Environment.IsDevelopment() ? 302 : 301));
 
-    // Check if the path is empty (root) or exactly "/campaigns"
-    if (string.IsNullOrEmpty(path) || path == "/campaigns")
-    {
-        // Determine if we're on preview or live based on the host
-        var host = context.Request.Host.Host;
-        var isPreview = host.Contains("preview") || host == "localhost";
-
-        // Set the redirect URL based on environment
-        var redirectUrl = isPreview ? WebsiteConstants.ROOT_PREVIEW_URL : WebsiteConstants.ROOT_LIVE_URL;
-
-        // Log the redirect for debugging (optional)
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Redirecting {Path} to {RedirectUrl} (Host: {Host}, IsPreview: {IsPreview})",
-            path, redirectUrl, host, isPreview);
-
-        context.Response.Redirect(redirectUrl, true); // true = permanent redirect (301)
-        return;
-    }
-
-    await next();
-});
+// Restrictive middleware has been REMOVED – now routing and controllers handle 404s.
 
 app.UseRouting();
 
-string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/');
+string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "your-council"
 
-// 1. EXACT match for /campaigns (or /campains) – must come first
+// 1. EXACT match for /Your-counil (or /your-council) – must come first
 app.MapControllerRoute(
     name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
-    pattern: WebsiteConstants.SITE_PATH,  // literal "business" (case‑insensitive matches business too)
+    pattern: WebsiteConstants.SITE_PATH,  // literal "Your-council" (case‑insensitive matches /your-council too)
     defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
 );
 
-// 2. Section route for /campaigns/{section}/... (requires at least one segment after campaigns/)
+// 2. Your-counl Section route for /your-council/{section}/... (requires at least one segment after your-council/)
 app.MapControllerRoute(
     name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
     pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",

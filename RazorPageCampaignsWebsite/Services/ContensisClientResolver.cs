@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using Nancy;
-using System.Net.Http;
-using Zengenti;
+﻿using Microsoft.AspNetCore.Http;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageCampaignsWebsite.Services
@@ -13,20 +9,18 @@ namespace RazorPageCampaignsWebsite.Services
         string showHost { get; }
         bool isPreview { get; }
         string showVersionStatus { get; }
-        
-
     }
 
     public class ContensisClientResolver : IContensisClientResolver
     {
         private ContensisClient? _cachedClient;
-        private readonly IRequestContext _requestContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private string? _computedVersionStatus;
         private bool? _computedIsPreview;
 
-        public ContensisClientResolver(IRequestContext rc)
+        public ContensisClientResolver(IHttpContextAccessor httpContextAccessor)
         {
-            _requestContext = rc;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public ContensisClient GetClient()
@@ -44,17 +38,32 @@ namespace RazorPageCampaignsWebsite.Services
 
         private string DetermineVersionStatus()
         {
-            // 1. Query string override
-            string? queryVersion = _requestContext.GetQueryStringVersionStatus();
-            if (!string.IsNullOrEmpty(queryVersion) && (queryVersion == "latest" || queryVersion == "published"))
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            // If there's no active HTTP request (e.g., startup, background job), default to published
+            if (httpContext == null)
             {
-                _computedVersionStatus   = queryVersion;
-                _computedIsPreview       = queryVersion == "latest";
+                _computedVersionStatus = "published";
+                _computedIsPreview = false;
                 return _computedVersionStatus;
             }
 
+            var request = httpContext.Request;
+
+            // 1. Query string override
+            if (request.Query.TryGetValue("versionstatus", out var queryValues))
+            {
+                string? queryVersion = queryValues.FirstOrDefault();
+                if (!string.IsNullOrEmpty(queryVersion) && (queryVersion == "latest" || queryVersion == "published"))
+                {
+                    _computedVersionStatus = queryVersion;
+                    _computedIsPreview = queryVersion == "latest";
+                    return _computedVersionStatus;
+                }
+            }
+
             // 2. Header from reverse proxy
-            if (_requestContext.Headers.TryGetValue("x-entry-versionstatus", out var headerValues))
+            if (request.Headers.TryGetValue("x-entry-versionstatus", out var headerValues))
             {
                 string? headerVersion = headerValues.FirstOrDefault();
                 if (!string.IsNullOrEmpty(headerVersion) && (headerVersion == "latest" || headerVersion == "published"))
@@ -66,7 +75,7 @@ namespace RazorPageCampaignsWebsite.Services
             }
 
             // 3. Host-based fallback
-            string host = _requestContext.Host.ToString().ToLower();
+            string host = httpContext.Request.Host.Host.ToLower();
             bool isPreviewHost = host.Contains("preview-blackpool") || host.Contains("cloud.contensis.com") || host.Contains("localhost");
 
             _computedVersionStatus = isPreviewHost ? "latest" : "published";
@@ -74,9 +83,9 @@ namespace RazorPageCampaignsWebsite.Services
             return _computedVersionStatus;
         }
 
-        // Interface implementation – exact naming (lowercase first letter)
+        // Interface properties
         public string showVersionStatus => _computedVersionStatus ?? DetermineVersionStatus();
-        public string showHost => _requestContext.Host.ToString().ToLower();
+        public string showHost => _httpContextAccessor.HttpContext?.Request.Host.Host.ToLower() ?? "no-request";
         public bool isPreview => _computedIsPreview ?? (_computedVersionStatus == "latest");
     }
 }
