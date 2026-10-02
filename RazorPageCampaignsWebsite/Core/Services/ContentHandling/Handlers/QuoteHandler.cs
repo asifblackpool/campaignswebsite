@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Html;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageCampaignsWebsite.Helpers.Wrappers;
 
-
 namespace RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers
 {
     public class QuoteHandler : IContentHandler

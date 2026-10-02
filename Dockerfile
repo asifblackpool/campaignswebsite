@@ -32,7 +32,7 @@ ENV GH_PAT=${GH_PAT} \
 WORKDIR /src
 
 # Copy project files
-COPY RazorPageCampaignsWebsite/*.csproj ./RazorPageCampaignsWebsite/
+COPY RazorPageCampaignsWebsite./*.csproj ./RazorPageCampaignsWebsite./
 
 # Add GitHub Packages source
 RUN dotnet nuget add source \
@@ -45,13 +45,13 @@ RUN dotnet nuget add source \
 # Show sources for debugging
 RUN dotnet nuget list source
 
-WORKDIR /src/RazorPageCampaignsWebsite
+WORKDIR /src/RazorPageCampaignsWebsite.
 
 # Restore packages
 RUN dotnet restore
 
 # Copy rest of code and publish
-COPY RazorPageCampaignsWebsite/. .
+COPY RazorPageCampaignsWebsite./. .
 
 # =============================================
 # PUBLISH WITH RAZOR COMPILATION FORCED

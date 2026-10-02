@@ -5,7 +5,7 @@ using Content.Modelling.Models.Components;
 using Content.Modelling.Models.Weddings;
 using Content.Modelling.Models.Data;
 
-namespace CampaignsWebsite.UnitTests.Pages
+namespace YourCouncilWebsite.UnitTests.Pages
 {
     public class NavigationTileSimpleTests
     {

@@ -9,7 +9,6 @@ using RazorPageCampaignsWebsite.Components.Extensions;
 
 namespace RazorPageCampaignsWebsite.Components
 {
-
     public class AdditionalInformationViewComponent : ViewComponent
     {
         private readonly ContensisClient _contensisClient;

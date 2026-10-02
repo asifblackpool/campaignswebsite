@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" />
-    <ProjectReference Include="..\RazorPageCampaignsWebsite\RazorPageCampaignsWebsite.csproj" />
+    <ProjectReference Include="..\RazorPageCampaignsWebsite.\RazorPageCampaignsWebsite.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿
-// File: Helpers/ResourceHelper.cs
+﻿// File: Helpers/ResourceHelper.cs
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;

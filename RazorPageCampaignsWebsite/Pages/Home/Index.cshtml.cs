@@ -4,7 +4,7 @@ using RazorPageCampaignsWebsite.Services.Interfaces;
 using RazorPageCampaignsWebsite.Constants;
 using RazorPageCampaignsWebsite.Core.Interfaces;
 
-namespace RazorPageBusinessWebsite.Pages.Home
+namespace RazorPageCampaignsWebsite.Pages.Home
 {
     public class IndexModel : PageModel
     {
