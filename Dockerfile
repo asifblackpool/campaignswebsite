@@ -45,7 +45,7 @@ RUN dotnet nuget add source \
 # Show sources for debugging
 RUN dotnet nuget list source
 
-WORKDIR /src/RazorPageCampaignsWebsite.
+WORKDIR /src/RazorPageCampaignsWebsite
 
 # Restore packages
 RUN dotnet restore
