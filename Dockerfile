@@ -51,7 +51,7 @@ WORKDIR /src/RazorPageCampaignsWebsite.
 RUN dotnet restore
 
 # Copy rest of code and publish
-COPY RazorPageCampaignsWebsite./. .
+COPY RazorPageCampaignsWebsite/. .
 
 # =============================================
 # PUBLISH WITH RAZOR COMPILATION FORCED
