@@ -1,5 +1,4 @@
-﻿
-(function () {
+﻿(function () {
     function wrapTables() {
         var tables = document.querySelectorAll('table.data-table');
         for (var i = 0; i < tables.length; i++) {
@@ -14,6 +13,7 @@
             wrapper.appendChild(table);
         }
     }
+
     window.wrapDataTables = wrapTables;
 
     if (document.readyState === 'loading') {

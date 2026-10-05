@@ -32,7 +32,7 @@ ENV GH_PAT=${GH_PAT} \
 WORKDIR /src
 
 # Copy project files
-COPY RazorPageCampaignsWebsite./*.csproj ./RazorPageCampaignsWebsite./
+COPY RazorPageCampaignsWebsite/*.csproj ./RazorPageCampaignsWebsite/
 
 # Add GitHub Packages source
 RUN dotnet nuget add source \
