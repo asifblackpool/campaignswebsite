@@ -19,21 +19,24 @@ namespace RazorPageCampaignsWebsite.Middleware
 
         public async Task InvokeAsync(HttpContext context, BreadcrumbService breadcrumbService, ILogger<BreadcrumbMiddleware> logger)
         {
-            logger.LogInformation("BreadcrumbMiddleware starting");
-
             try
             {
                 breadcrumbService.Reset();
-                logger.LogInformation("Breadcrumbs reset successfully");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to reset breadcrumbs");
-                // Continue anyway
+                logger.LogError(ex, "Failed to reset breadcrumbs. Continuing without reset.");
             }
 
-            await _next(context);
-            logger.LogInformation("BreadcrumbMiddleware completed");
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during request processing after breadcrumb middleware");
+                throw; // rethrow to let the error page handle it
+            }
         }
     }
 }

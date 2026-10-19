@@ -291,7 +291,7 @@
                 tp_inst._defaults.maxDate = new Date();
             }
 
-            // datepicker needs minDate/maxDate, timepicker needs minDateTime/maxDateTime..
+            // datepicker needs minDate/maxDate, timepicker needs minDateTime/maxDateTime.
             if (tp_inst._defaults.minDate !== undefined && tp_inst._defaults.minDate instanceof Date) {
                 tp_inst._defaults.minDateTime = new Date(tp_inst._defaults.minDate.getTime());
             }
@@ -773,7 +773,7 @@
         },
 
         /*
-		* when a slider moves, set the internal time...
+		* when a slider moves, set the internal time..
 		* on time change is also called when the time is updated in the text field
 		*/
         _onTimeChange: function () {
@@ -909,7 +909,7 @@
         },
 
         /*
-		* update our input with the new date time..
+		* update our input with the new date time.
 		*/
         _updateDateTime: function (dp_inst) {
             dp_inst = this.inst || dp_inst;

@@ -1,5 +1,10 @@
 ﻿namespace RazorPageCampaignsWebsite.Middleware
 {
+    /// <summary>
+    /// Captures the original request path and querystring before the
+    /// status-code re-execute swaps the URL to /Error, so the error page
+    /// can display what the user was actually trying to reach.
+    /// </summary>
     public class ErrorContextMiddleware
     {
         private readonly RequestDelegate _next;

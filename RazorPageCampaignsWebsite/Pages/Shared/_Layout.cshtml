@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="~/static/css/service-contact.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/old-forms.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/privacy-notices.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/css/privacy-notices.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/webcast.css" asp-append-version="true" />
 
     <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
 
@@ -92,6 +92,7 @@
         $(document).ready(function () {
             window.commonservices.init('https://cms-blackpool.cloud.contensis.com', 'https://api.blackpool.gov.uk/preview/');
             privacyServices.init();
+            
         });
     </script>
     @if (Model?.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)

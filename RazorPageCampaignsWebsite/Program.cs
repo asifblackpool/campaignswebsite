@@ -23,7 +23,6 @@ using RazorPageCampaignsWebsite.Infrastructure.Repositories;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageCampaignsWebsite.Core.Services.ContentHandling.Interfaces;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables FIRST
@@ -32,12 +31,12 @@ DotNetEnv.Env.TraversePath().Load();
 // Configure Forwarded Headers to trust the proxy
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                               ForwardedHeaders.XForwardedProto |
-                               ForwardedHeaders.XForwardedHost;
-    options.KnownNetworks.Clear();
-    options.KnownProxies.Clear();
-    options.AllowedHosts.Clear();
+options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                           ForwardedHeaders.XForwardedProto |
+                           ForwardedHeaders.XForwardedHost;
+options.KnownNetworks.Clear();
+options.KnownProxies.Clear();
+options.AllowedHosts.Clear();
 });
 
 builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
@@ -45,8 +44,8 @@ builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
 // Register the concrete ContensisClient so that any class expecting it gets the correct per‑request client
 builder.Services.AddScoped<ContensisClient>(sp =>
 {
-    var resolver = sp.GetRequiredService<IContensisClientResolver>();
-    return resolver.GetClient();
+var resolver = sp.GetRequiredService<IContensisClientResolver>();
+return resolver.GetClient();
 });
 
 // Register generic data service (this depends on IContensisClient)
@@ -71,9 +70,11 @@ builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
 // ── Privacy Notices accordion ──
-builder.Services.AddPrivacyNoticesAccordion();                                                       // registers PrivacyNoticeHelper + PrivacyNoticeHtmlWrapper
-builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();     // per-website renderer
-builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();                       // per-website handler
+builder.Services.AddPrivacyNoticesAccordion();
+builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();
+builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();
+
+builder.Services.AddScoped<IWebCastRenderer, WebCastRenderer>();
 
 // Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
@@ -89,42 +90,53 @@ builder.Services.AddScoped<ContentViewModelService>();
 // ===== MVC Controllers =====
 builder.Services.AddControllersWithViews();
 
+// Required by PdfController to fetch files from Contensis storage
+builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ClassicAssetProxy", client =>
+{
+client.Timeout = TimeSpan.FromSeconds(60);
+});
+
 // ===== Razor Pages =====
 string relativeUrlPath = WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/');
 builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
-    {
-        options.RootDirectory = "/Pages";
-        options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
-    });
+{
+options.RootDirectory = "/Pages";
+options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
+});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IRequestContext, RequestContext>();
 builder.Services.AddScoped<BreadcrumbService>();
 
-// Automatic register all content handlers 
+// Automatic register all content handlers
 builder.Services.AddContentHandlers();
 
 // Add all content modelling services (one line!)
 builder.Services.AddContentModelling(builder.Configuration, options =>
 {
-    options.DefaultCacheMinutes = 10;
-    options.DebugTokenKey = "DebugToken";
-    options.EnableDebugModeByDefault = false;
+options.DefaultCacheMinutes = 10;
+options.DebugTokenKey = "DebugToken";
+options.EnableDebugModeByDefault = false;
 });
 
 // Register the factory that maps Contensis content types to view models
 builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 
-// ===== In-memory cache with size limit =====
-// SetSize(1) is used on every cache entry in ZengentiClientAdapter and
-// ContensisDataService, so this limit is enforced.
-// 10,000 entries × ~5 min TTL comfortably covers a site with hundreds of
-// pages plus their canvas child entries without hitting the eviction cliff.
+// ===== In-memory cache with BYTE-based size limit =====
+//
+// The ZengentiClientAdapter and CanvasHydrator use byte-based sizes
+// (SetSize(serialisedPayloadLength)). That means the SizeLimit here is
+// in BYTES, not entries. 64 MB is comfortable for a container with
+// 512 MB – 1 GB of RAM and holds a few hundred hydrated pages.
+//
+// If you see frequent cache misses / re-fetches under load, raise this.
+// If RSS climbs towards the container limit, lower it.
 builder.Services.AddMemoryCache(options =>
 {
-    options.SizeLimit = 10_000;
+options.SizeLimit = 64 * 1024 * 1024;   // 64 MB total
 });
 
 var app = builder.Build();
@@ -132,28 +144,43 @@ var app = builder.Build();
 app.UseContentModelling();
 app.UseForwardedHeaders();
 
+// ─────────────────────────────────────────────────────────────────────
+// EXCEPTION HANDLING
+//
+// /Error must NOT depend on Contensis. If it does, an OOM in the content
+// fetch will re-execute /Error, which re-enters the content fetch, and
+// the process dies. AllowStatusCode404Response prevents the secondary
+// InvalidOperationException when /Error itself returns a 404.
+// ─────────────────────────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+ExceptionHandlingPath = "/Error",
+AllowStatusCode404Response = true
+});
+app.UseHsts();
 }
 else
 {
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-        context.Response.Headers["Pragma"] = "no-cache";
-        context.Response.Headers["Expires"] = "0";
-        await next();
-    });
+app.Use(async (context, next) =>
+{
+context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+context.Response.Headers["Pragma"] = "no-cache";
+context.Response.Headers["Expires"] = "0";
+await next();
+});
 }
 
 app.UseStaticFiles();
 
+// Proxy asset requests to the Classic backend so PDFs, CSVs, Office
+// documents etc. are served correctly instead of being routed to the
+// Block renderer.
+app.UseMiddleware<ClassicAssetProxyMiddleware>();
+
 // Redirect root to your-council
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH, app.Environment.IsDevelopment() ? 302 : 301));
-
-// Restrictive middleware has been REMOVED – now routing and controllers handle 404s.
 
 app.UseRouting();
 
@@ -162,21 +189,31 @@ app.UseErrorContext();
 
 string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "your-council"
 
-// 1. EXACT match for /Your-council (or /your-council) – must come first
+// ─────────────────────────────────────────────────────────────────────
+// ENDPOINT REGISTRATION — ORDER MATTERS
+//
+// Attribute-routed controllers (like PdfController with [Route("pdf")])
+// are registered FIRST by MapControllers, and take precedence over the
+// conventional routes below. But we still add an explicit exclusion on
+// the section route so /pdf/... can never be captured by it.
+// ─────────────────────────────────────────────────────────────────────
+
+app.MapControllers();
+
+// 1. EXACT match for /xxxxx (or /xxxxx) – must come first
 app.MapControllerRoute(
     name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
-    pattern: WebsiteConstants.SITE_PATH,  // literal "Your-council" (case‑insensitive matches /your-council too)
+    pattern: WebsiteConstants.SITE_PATH,
     defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
 );
 
-// 2. Your-council Section route for /your-council/{section}/... (requires at least one segment after your-council/)
 app.MapControllerRoute(
     name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
-    pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",
+    pattern: WebsiteConstants.SITE_PATH + "/{section:regex(^(?!pdf$|error$).+)}/{**slug}",
     defaults: new { controller = string.Format("{0}Section", WebsiteConstants.SITE_CONTROLLER), action = "Index" }
 );
 
-app.MapRazorPages(); // Razor Pages still available for non your-council routes
+app.MapRazorPages();
 
 // Breadcrumb runs after routing so it can see the matched endpoint,
 // but before status-code pages so it can log the original request.
@@ -186,27 +223,33 @@ app.UseMiddleware<BreadcrumbMiddleware>();
 // Requires an endpoint at /Error — provided by ErrorController.
 app.UseStatusCodePagesWithReExecute("/Error");
 
-// ===== WARM UP CONTENSIS CLIENT to avoid first-request timeout =====
+// ===== WARM UP CONTENSIS CLIENT =====
+//
+// Warm up the HTTP/TLS stack ONLY. Do not fetch a full entry — that can
+// itself OOM at boot and leave the process in a degraded state before
+// a single request has been served. A minimal node fetch with narrow
+// fields exercises the same code path with negligible memory.
 using (var warmupScope = app.Services.CreateScope())
 {
-    var warmupClient = warmupScope.ServiceProvider.GetRequiredService<IZengentiClient>();
-    var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    try
-    {
-        // Warm up against the actual site root so a real node is resolved.
-        // Failures are non-fatal — the first real request will just be slower.
-        await warmupClient.GetNodeByPathAsync(WebsiteConstants.SITE_PATH.TrimStart('/'));
-        logger.LogInformation("Contensis client warmed up successfully.");
-    }
-    catch (Exception ex)
-    {
-        logger.LogWarning(ex, "Contensis client warm-up failed – first request may be slow.");
-    }
+var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+var client = warmupScope.ServiceProvider.GetRequiredService<ContensisClient>();
+await client.Nodes.GetByPathAsync(
+    WebsiteConstants.SITE_PATH.TrimStart('/'),
+    entryFields: new[] { "title" },
+    entryLinkDepth: 0);
+logger.LogInformation("Contensis client warmed up successfully.");
+}
+catch (Exception ex)
+{
+logger.LogWarning(ex, "Contensis client warm-up failed – first request may be slow.");
+}
 }
 
 await app.RunAsync();
 
-#region ContensisClientFactory (unchanged)
+#region ContensisClientFactory
 public static class ContensisClientFactory
 {
     private static readonly object _lock = new object();
@@ -226,6 +269,7 @@ public static class ContensisClientFactory
             }
         }
     }
+
     public static ContensisClient CreatePreviewClient()
     {
         EnsureEnvironmentLoaded();
