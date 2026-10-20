@@ -26,12 +26,46 @@ namespace RazorPageCampaignsWebsite.Services
         /// </summary>
         private static readonly string[] EntryFields =
         {
-            "title",
-            "slug",
+            // ── Common page metadata ──
+            "pageTitle",                        // title field on standardWebpage*, websiteLandingPage*, websiteSubsectionLandingPage
+            "title",                            // legacy — no-op on current content types, kept for safety
+            "slug",                             // node metadata — no-op, kept for safety
+            "metaTitle",                        // standardWebpage, websiteLandingPageMain, websiteLandingPageMainCopy, websiteSubsectionLandingPage
+            "shortText1",                       // meta title on standardWebpageImages, standardWebpageCopy, standardWebpageImagesCopy
+            "metaDescription",
+            "pageAlias",
+            "chatBotID",
+            "removeThisPageFromSearchEngines",
+            "whichSectionOfTheWebsiteIsThisPageLocated",
+
+            // ── Page content ──
             "canvas",
-            "mainContent",
-            "metaTitle",
-            "metaDescription"
+            "mainContent",                      // legacy — no-op, kept for safety
+            "dataNavigationLink",               // standardWebpage additional info
+            "entry",                            // standardWebpage / landing page child entries
+
+            // ── Forms ──
+            "formID",                           // standardWebpageCopy (legacy form embed)
+
+            // ── Service announcements ──
+            "serviceAnnouncement",              // websiteSubsectionLandingPage, standardWebpageCopy, standardWebpageImagesCopy
+
+            // ── Tile landing pages ──
+            "navigationTile",                   // websiteLandingPageMainCopy
+            "howManyTilesInARowDoYouWant",      // websiteLandingPageMainCopy
+
+            // ── Assets and links ──
+            "asset",                            // standardWebpage, standardWebpageImages
+            "url",                              // standardWebpageImages
+
+            // ── Inline data entries: dataBGContactPanel ──
+            "serviceName",
+            "address",
+            "phoneNumber11",                    // yes, this is Phone number 1 — the CMS field id is odd
+            "phoneNumber1",                     // Phone number 2
+            "phoneNumber2",                     // Phone number 3
+            "emailAddress",
+            "notes"
         };
 
         /// <summary>
@@ -106,7 +140,12 @@ namespace RazorPageCampaignsWebsite.Services
                 EntryId = entryId,
                 Path = node.Path,
                 Slug = node.Slug,
-                Title = entry.Get<string>("title") ?? node.DisplayName,
+                // Title: pageTitle is the real title field on every content type
+                // we use. title is legacy. Fall back to the node display name
+                // if neither is populated.
+                Title = entry.Get<string>("pageTitle")
+                     ?? entry.Get<string>("title")
+                     ?? node.DisplayName,
                 ContentType = entry.ContentTypeId ?? "unknown",
                 HtmlContent = entry.Get<string>("mainContent") ?? "",
                 EntryJson = entryJsonString
@@ -137,18 +176,20 @@ namespace RazorPageCampaignsWebsite.Services
             {
                 var childEntryId = child.EntryId ?? child.Id;
 
-                // For child listings we only need title/slug/contentType,
-                // not the canvas. Fetch a narrower field set here.
+                // For child listings we only need the title and slug, not the
+                // canvas. pageTitle is the real title field; title is legacy.
                 var entry = await TryGetEntryAsync(
                     childEntryId,
-                    fields: new[] { "title", "slug" });
+                    fields: new[] { "pageTitle", "title", "slug" });
 
                 list.Add(new CmsNode
                 {
                     EntryId = childEntryId,
                     Path = child.Path,
                     Slug = child.Slug,
-                    Title = entry?.Get<string>("title") ?? child.DisplayName,
+                    Title = entry?.Get<string>("pageTitle")
+                         ?? entry?.Get<string>("title")
+                         ?? child.DisplayName,
                     ContentType = entry?.ContentTypeId ?? "unknown",
                     HtmlContent = string.Empty
                 });
@@ -198,7 +239,10 @@ namespace RazorPageCampaignsWebsite.Services
         {
             try
             {
-                return await _contensisClient.Entries.GetAsync(entryId, fields: fields ?? EntryFields, linkDepth: 0);
+                return await _contensisClient.Entries.GetAsync(
+                    entryId,
+                    fields: fields ?? EntryFields,
+                    linkDepth: 0);
             }
             catch (OutOfMemoryException)
             {
@@ -271,13 +315,12 @@ namespace RazorPageCampaignsWebsite.Services
 
         /// <summary>
         /// Cache options with a size proportional to the payload. This only
-        /// has an effect if IMemoryCache is registered with a SizeLimit (see
-        /// registration note below).
+        /// has an effect if IMemoryCache is registered with a SizeLimit
+        /// (see Program.cs — 64 MB total).
         /// </summary>
         private static MemoryCacheEntryOptions CacheOptions(long sizeBytes) =>
             new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(CacheTtl)
                 .SetSize(Math.Max(1, sizeBytes));
     }
-
 }
