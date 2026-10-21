@@ -13,7 +13,7 @@ namespace RazorPageCampaignsWebsite.Controllers
         public CampaignsSectionController(
             IZengentiClient cmsClient,
             ICmsViewModelFactory viewModelFactory,
-            ILogger<YourCouncilSectionController> logger)
+            ILogger<CampaignsSectionController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
         
 
